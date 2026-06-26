@@ -710,6 +710,10 @@ function draw() {
 
   // Far canopy
   ctx.save(); ctx.translate(-cameraX * 0.08, 0);
+  ctx.fillStyle = shadeColor('#122e0a', treeShade);
+  ctx.beginPath(); ctx.moveTo(-300, -10);
+  for (let i = 0; i <= 32; i++) ctx.lineTo(i*155-300, 60+Math.sin(i*0.95+1)*38+Math.cos(i*1.8)*20);
+  ctx.lineTo(5200, -10); ctx.closePath(); ctx.fill();
   ctx.fillStyle = shadeColor('#1a5410', treeShade);
   ctx.beginPath(); ctx.moveTo(-300, -10);
   for (let i = 0; i <= 32; i++) ctx.lineTo(i*155-300, 45+Math.sin(i*0.95+1)*38+Math.cos(i*1.8)*20);
@@ -717,6 +721,10 @@ function draw() {
   ctx.fillStyle = shadeColor('#268c18', treeShade);
   ctx.beginPath(); ctx.moveTo(-300, -10);
   for (let i = 0; i <= 32; i++) ctx.lineTo(i*140-300, 30+Math.sin(i*1.4+2)*28+Math.cos(i*0.85)*16);
+  ctx.lineTo(5200, -10); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = shadeColor('#3aaa22', treeShade);
+  ctx.beginPath(); ctx.moveTo(-300, -10);
+  for (let i = 0; i <= 32; i++) ctx.lineTo(i*138-300, 18+Math.sin(i*1.7+0.5)*18+Math.cos(i*1.2)*10);
   ctx.lineTo(5200, -10); ctx.closePath(); ctx.fill();
   ctx.restore();
 
@@ -737,6 +745,10 @@ function draw() {
 
   // Mid canopy
   ctx.save(); ctx.translate(-cameraX * 0.25, 0);
+  ctx.fillStyle = shadeColor('#143a0c', treeShade);
+  ctx.beginPath(); ctx.moveTo(-200,-10);
+  for (let i=0;i<=28;i++) ctx.lineTo(i*175-200, 72+Math.sin(i*1.15+0.6)*42+Math.cos(i*2.2)*22);
+  ctx.lineTo(5000,-10); ctx.closePath(); ctx.fill();
   ctx.fillStyle = shadeColor('#1e6e12', treeShade);
   ctx.beginPath(); ctx.moveTo(-200,-10);
   for (let i=0;i<=28;i++) ctx.lineTo(i*175-200, 58+Math.sin(i*1.15+0.6)*42+Math.cos(i*2.2)*22);
@@ -744,6 +756,10 @@ function draw() {
   ctx.fillStyle = shadeColor('#348a20', treeShade);
   ctx.beginPath(); ctx.moveTo(-200,-10);
   for (let i=0;i<=28;i++) ctx.lineTo(i*152-200, 42+Math.sin(i*1.85+1.2)*32+Math.cos(i*0.9)*18);
+  ctx.lineTo(5000,-10); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = shadeColor('#4aaa2a', treeShade);
+  ctx.beginPath(); ctx.moveTo(-200,-10);
+  for (let i=0;i<=28;i++) ctx.lineTo(i*148-200, 26+Math.sin(i*2.1+0.3)*20+Math.cos(i*1.3)*12);
   ctx.lineTo(5000,-10); ctx.closePath(); ctx.fill();
   ctx.restore();
 
@@ -773,6 +789,39 @@ function draw() {
     ctx.lineTo(tx+tw*0.33,gY-th);
     ctx.bezierCurveTo(tx+tw*0.4,gY-th*0.9, tx+tw*0.58,gY-th*0.58, tx+tw*0.52,gY-th*0.17);
     ctx.closePath(); ctx.fill();
+    // Bark texture lines
+    ctx.strokeStyle = shadeColor('#1a0a04', treeShade);
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(tx-tw*0.1, gY-th*0.22); ctx.bezierCurveTo(tx-tw*0.18,gY-th*0.5, tx-tw*0.12,gY-th*0.75, tx-tw*0.08,gY-th*0.95); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx+tw*0.14, gY-th*0.2); ctx.bezierCurveTo(tx+tw*0.22,gY-th*0.48, tx+tw*0.16,gY-th*0.72, tx+tw*0.1,gY-th*0.93); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tx-tw*0.28, gY-th*0.3); ctx.bezierCurveTo(tx-tw*0.3,gY-th*0.55, tx-tw*0.24,gY-th*0.7, tx-tw*0.2,gY-th*0.85); ctx.stroke();
+    // Left branch
+    const bY = gY - th * (0.48 + (tx % 3) * 0.06);
+    const btg = ctx.createLinearGradient(tx-tw*2.4,0,tx,0);
+    btg.addColorStop(0, shadeColor('#301406', treeShade));
+    btg.addColorStop(0.5, shadeColor('#7a4818', treeShade));
+    btg.addColorStop(1, shadeColor('#301406', treeShade));
+    ctx.fillStyle = btg;
+    ctx.beginPath();
+    ctx.moveTo(tx-tw*0.4, bY+5);
+    ctx.bezierCurveTo(tx-tw*1.1,bY-2, tx-tw*1.9,bY-14, tx-tw*2.4,bY-10);
+    ctx.bezierCurveTo(tx-tw*1.9,bY-22, tx-tw*1.1,bY-12, tx-tw*0.4,bY-5);
+    ctx.closePath(); ctx.fill();
+    // Right branch
+    const btg2 = ctx.createLinearGradient(tx,0,tx+tw*2.2,0);
+    btg2.addColorStop(0, shadeColor('#301406', treeShade));
+    btg2.addColorStop(0.5, shadeColor('#7a4818', treeShade));
+    btg2.addColorStop(1, shadeColor('#301406', treeShade));
+    ctx.fillStyle = btg2;
+    const bY2 = gY - th * (0.38 + (tx % 5) * 0.04);
+    ctx.beginPath();
+    ctx.moveTo(tx+tw*0.4, bY2+5);
+    ctx.bezierCurveTo(tx+tw*1.0,bY2-4, tx+tw*1.8,bY2-10, tx+tw*2.2,bY2-8);
+    ctx.bezierCurveTo(tx+tw*1.8,bY2-20, tx+tw*1.0,bY2-14, tx+tw*0.4,bY2-5);
+    ctx.closePath(); ctx.fill();
   }
   ctx.restore();
 
@@ -781,14 +830,28 @@ function draw() {
   for (let tx = 50; tx < 4000; tx += 195) {
     const cr = 58 + (tx % 5) * 13;
     const cy2 = H * (0.14 + (tx % 4) * 0.04);
+    // Deep shadow base
+    ctx.fillStyle = shadeColor('#0e3808', treeShade);
+    ctx.beginPath(); ctx.ellipse(tx+cr*0.14,cy2+cr*0.32,cr*1.18,cr*0.92,0,0,Math.PI*2); ctx.fill();
+    // Main shadow cluster
     ctx.fillStyle = shadeColor('#1a6010', treeShade);
     ctx.beginPath(); ctx.ellipse(tx+cr*0.1,cy2+cr*0.22,cr*1.08,cr*0.84,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(tx-cr*0.7,cy2+cr*0.35,cr*0.52,cr*0.44,0.3,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(tx+cr*0.72,cy2+cr*0.28,cr*0.48,cr*0.4,-0.25,0,Math.PI*2); ctx.fill();
+    // Mid green clusters
     ctx.fillStyle = shadeColor('#38a020', treeShade);
     ctx.beginPath(); ctx.ellipse(tx,cy2,cr,cr*0.8,0,0,Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.ellipse(tx-cr*0.52,cy2+cr*0.2,cr*0.6,cr*0.5,0,0,Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.ellipse(tx+cr*0.5,cy2+cr*0.16,cr*0.56,cr*0.46,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(tx-cr*0.3,cy2+cr*0.42,cr*0.44,cr*0.38,0.15,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(tx+cr*0.28,cy2-cr*0.08,cr*0.42,cr*0.35,-0.1,0,Math.PI*2); ctx.fill();
+    // Bright highlight clusters
     ctx.fillStyle = shadeColor('#72d840', treeShade);
     ctx.beginPath(); ctx.ellipse(tx-cr*0.16,cy2-cr*0.2,cr*0.5,cr*0.36,-0.2,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(tx+cr*0.34,cy2-cr*0.14,cr*0.38,cr*0.28,0.3,0,Math.PI*2); ctx.fill();
+    // Specular tip
+    ctx.fillStyle = shadeColor('#96f050', treeShade);
+    ctx.beginPath(); ctx.ellipse(tx-cr*0.08,cy2-cr*0.32,cr*0.26,cr*0.18,-0.15,0,Math.PI*2); ctx.fill();
   }
   ctx.restore();
 
@@ -808,15 +871,46 @@ function draw() {
   ctx.bezierCurveTo(W*0.3, H*0.77, W*0.7, H*0.81, W, H*0.78);
   ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
 
-  for (let gx = -10; gx < W+10; gx += 30) {
-    const gy = H*0.88 + Math.sin(gx*0.14)*7;
-    ctx.fillStyle = gx % 60 < 30 ? shadeColor('#266e10', treeShade) : shadeColor('#1e5a0c', treeShade);
+  // Foreground fringe blades at sod edge
+  for (let gx = -8; gx < W+8; gx += 10) {
+    const gy = H*0.755 + Math.sin(gx*0.22)*4;
+    const hv = 10 + (gx % 7) * 2;
+    const lean = (gx % 5 - 2) * 1.5;
+    ctx.strokeStyle = gx % 3 === 0 ? shadeColor('#4cc018', treeShade) : shadeColor('#368a10', treeShade);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(gx+4, gy+4);
+    ctx.quadraticCurveTo(gx+4+lean, gy-hv*0.5, gx+5+lean*1.6, gy-hv);
+    ctx.stroke();
+  }
+  // Main grass tufts — denser and varied
+  for (let gx = -10; gx < W+10; gx += 14) {
+    const hv = 1 + (gx % 7) * 0.9;
+    const gy = H*0.88 + Math.sin(gx*0.14)*7 - hv;
+    const col = gx % 42 < 14 ? shadeColor('#266e10', treeShade) : gx % 42 < 28 ? shadeColor('#1e5a0c', treeShade) : shadeColor('#30841a', treeShade);
+    ctx.fillStyle = col;
     ctx.beginPath();
     ctx.moveTo(gx, gy+10);
-    ctx.bezierCurveTo(gx-3,gy-6, gx+2,gy-12, gx+5,gy+2);
-    ctx.bezierCurveTo(gx+7,gy-9, gx+12,gy-12, gx+14,gy+2);
+    ctx.bezierCurveTo(gx-3,gy-6, gx+2,gy-12-hv, gx+5,gy+2);
+    ctx.bezierCurveTo(gx+7,gy-9, gx+12,gy-12-hv, gx+14,gy+2);
     ctx.bezierCurveTo(gx+16,gy-6, gx+20,gy-3, gx+22,gy+10);
     ctx.closePath(); ctx.fill();
+  }
+  // Wildflower dots
+  for (let gx = 0; gx < W; gx += 14) {
+    if (gx % 90 === 0) {
+      const gy = H*0.88 + Math.sin(gx*0.14)*7 - 14;
+      ctx.fillStyle = shadeColor('#f0e020', treeShade);
+      ctx.beginPath(); ctx.arc(gx+6, gy, 3, 0, Math.PI*2); ctx.fill();
+    } else if (gx % 98 === 0) {
+      const gy = H*0.88 + Math.sin(gx*0.14)*7 - 12;
+      ctx.fillStyle = shadeColor('#ffffff', treeShade);
+      ctx.beginPath(); ctx.arc(gx+8, gy, 2.5, 0, Math.PI*2); ctx.fill();
+    } else if (gx % 126 === 0) {
+      const gy = H*0.88 + Math.sin(gx*0.14)*7 - 13;
+      ctx.fillStyle = shadeColor('#c060e0', treeShade);
+      ctx.beginPath(); ctx.arc(gx+5, gy, 2.5, 0, Math.PI*2); ctx.fill();
+    }
   }
 
   // ── World-space objects ────────────────────────────────────────────────────
