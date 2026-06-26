@@ -777,7 +777,7 @@ function draw() {
   ctx.restore();
 
   // Front canopy
-  ctx.save(); ctx.translate(-cameraX * 0.5, 0);
+  ctx.save(); ctx.translate(-cameraX * 0.4, 0);
   for (let tx = 50; tx < 4000; tx += 195) {
     const cr = 58 + (tx % 5) * 13;
     const cy2 = H * (0.14 + (tx % 4) * 0.04);
