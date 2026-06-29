@@ -227,6 +227,7 @@ const LEVELS = [
 let currentLevel = 0;
 let coins = 0, lives = 3, score = 0;
 let gameOver = false, levelComplete = false, finalWin = false;
+let menuActive = true;
 let cameraX = 0;
 let shakeMag = 0;
 
@@ -396,6 +397,7 @@ canvas.addEventListener('pointerup', function(e) {
   }
 });
 document.addEventListener('keydown', function(e) {
+  if (menuActive) { menuActive = false; startMusic(); e.preventDefault(); return; }
   if (!keys[e.code]) {
     keys[e.code] = true;
     startMusic();
@@ -403,7 +405,7 @@ document.addEventListener('keydown', function(e) {
       if (gameOver || finalWin) { restartGame(); return; }
       if (levelComplete) { nextLevel(); return; }
     }
-    if ((e.code === 'Space' || e.code === 'ArrowUp') && !gameOver && !finalWin && !levelComplete) {
+    if ((e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') && !gameOver && !finalWin && !levelComplete) {
       if (player.jumpsLeft > 0) {
         playSfx(player.jumpsLeft === 2 ? 'jump' : 'doublejump');
         shakeMag = 5;
@@ -428,12 +430,12 @@ function getPlatformY(p, px) {
 
 // ── Update ────────────────────────────────────────────────────────────────────
 function update() {
-  if (gameOver || finalWin || levelComplete) return;
+  if (menuActive || gameOver || finalWin || levelComplete) return;
 
   const speed = 4;
   player.vx = 0;
-  if (keys['ArrowLeft'])  { player.vx = -speed; player.facing = -1; }
-  if (keys['ArrowRight']) { player.vx =  speed; player.facing =  1; }
+  if (keys['ArrowLeft']  || keys['KeyA']) { player.vx = -speed; player.facing = -1; }
+  if (keys['ArrowRight'] || keys['KeyD']) { player.vx =  speed; player.facing =  1; }
 
   if (player.vx !== 0 && player.onGround) {
     player.walkTimer++;
@@ -1055,6 +1057,39 @@ function draw() {
     drawButton('▶ Play Again');
   }
 
+  // Main menu overlay
+  if (menuActive) {
+    ctx.fillStyle = 'rgba(0,0,0,0.62)';
+    ctx.fillRect(0, 0, W, H);
+    // Title
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 18;
+    ctx.fillStyle = '#f5e642';
+    ctx.font = 'bold 64px monospace';
+    ctx.fillText('STIC RUSH', W / 2, H / 2 - 70);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#d4f7a0';
+    ctx.font = '20px monospace';
+    ctx.fillText('Run, jump, and collect coins!', W / 2, H / 2 - 22);
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.beginPath(); ctx.roundRect(W/2 - 170, H/2 + 6, 340, 64, 12); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = '15px monospace';
+    ctx.fillText('WASD / Arrow Keys — Move & Jump', W / 2, H / 2 + 30);
+    ctx.fillText('Collect coins, reach the flag!', W / 2, H / 2 + 52);
+    ctx.restore();
+    btn.x = W / 2 - 80; btn.y = H / 2 + 110;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 8;
+    ctx.fillStyle = '#2ecc71';
+    ctx.beginPath(); ctx.roundRect(btn.x, btn.y, btn.w, btn.h, 8); ctx.fill();
+    ctx.shadowBlur = 0; ctx.fillStyle = '#fff';
+    ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('▶ Play', W / 2, btn.y + 26);
+    ctx.restore();
+  }
+
   ctx.restore();
 }
 
@@ -1090,6 +1125,7 @@ function restartGame() {
 }
 
 canvas.addEventListener('click', function(e) {
+  if (menuActive) { menuActive = false; startMusic(); return; }
   if (!gameOver && !finalWin && !levelComplete) return;
   const rect = canvas.getBoundingClientRect();
   const mx = (e.clientX - rect.left) * (W / rect.width);
