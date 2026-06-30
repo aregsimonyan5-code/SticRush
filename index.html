@@ -1306,12 +1306,13 @@
     }
 
     function restartGame() {
+      var restartLevel = finalWin ? 0 : currentLevel;
       lives = 3; score = 0;
       gameOver = false; levelComplete = false; finalWin = false;
       shakeMag = 0;
       document.getElementById('lives').textContent = '3';
       document.getElementById('score').textContent = '0';
-      loadLevel(0);
+      loadLevel(restartLevel);
     }
 
     canvas.addEventListener('click', function (e) {
