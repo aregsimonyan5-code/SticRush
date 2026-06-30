@@ -187,11 +187,11 @@
         worldW: 2000,
         skyTop: '#c84010', skyMid: '#ff7030', skyBot: '#ffb040',
         enemies: [
-          { x: 100, minX: 85, maxX: 148, y: 282, speed: 1.2 },
-          { x: 308, minX: 300, maxX: 360, y: 238, speed: 1.5 },
-          { x: 760, minX: 755, maxX: 808, y: 258, speed: 1.8 },
-          { x: 1185, minX: 1178, maxX: 1240, y: 175, speed: 2.0 },
-          { x: 1640, minX: 1635, maxX: 1690, y: 174, speed: 1.6 },
+          { x: 100, minX: 85, maxX: 148, y: 282, speed: 0.5 },
+          { x: 308, minX: 300, maxX: 360, y: 238, speed: 0.5 },
+          { x: 760, minX: 755, maxX: 808, y: 258, speed: 0.6 },
+          { x: 1185, minX: 1178, maxX: 1240, y: 175, speed: 0.6 },
+          { x: 1640, minX: 1635, maxX: 1690, y: 174, speed: 0.5 },
         ],
         platforms: [
           { x: 0, y: 410, w: 170, h: 12, curve: true },
@@ -235,12 +235,12 @@
         worldW: 2200,
         skyTop: '#040818', skyMid: '#080e28', skyBot: '#04060e',
         enemies: [
-          { x: 80, minX: 72, maxX: 122, y: 284, speed: 1.6 },
-          { x: 520, minX: 512, maxX: 560, y: 192, speed: 2.0 },
-          { x: 970, minX: 964, maxX: 1012, y: 210, speed: 2.2 },
-          { x: 1425, minX: 1418, maxX: 1460, y: 129, speed: 2.4 },
-          { x: 1895, minX: 1888, maxX: 1930, y: 129, speed: 2.0 },
-          { x: 2095, minX: 2090, maxX: 2188, y: 64, speed: 2.6 },
+          { x: 80, minX: 72, maxX: 122, y: 284, speed: 0.5 },
+          { x: 520, minX: 512, maxX: 560, y: 192, speed: 0.6 },
+          { x: 970, minX: 964, maxX: 1012, y: 210, speed: 0.6 },
+          { x: 1425, minX: 1418, maxX: 1460, y: 129, speed: 0.7 },
+          { x: 1895, minX: 1888, maxX: 1930, y: 129, speed: 0.6 },
+          { x: 2095, minX: 2090, maxX: 2188, y: 64, speed: 0.7 },
         ],
         platforms: [
           { x: 0, y: 410, w: 138, h: 12, curve: true },
@@ -746,7 +746,7 @@
     }
 
     function drawEnemy(x, y, facing, walkFrame) {
-      const bob = Math.sin(walkFrame / 4 * Math.PI * 2) * 1.5;
+      const bob = Math.sin(walkFrame / 4 * Math.PI * 2) * 0.3;
       const legSwing = Math.sin(walkFrame / 4 * Math.PI * 2);
       const cx = x + 11;
       const cy = y + 14 + bob;
