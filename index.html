@@ -49,6 +49,7 @@ const LEVELS = [
   {
     worldW: 1800,
     skyTop: '#a8d838', skyMid: '#c8f050', skyBot: '#78b820',
+    enemies: [],
     platforms: [
       { x: 0,    y: 410, w: 200, h: 12, curve: true },
       { x: 310,  y: 415, w: 160, h: 12, curve: true },
@@ -101,6 +102,13 @@ const LEVELS = [
   {
     worldW: 2000,
     skyTop: '#c84010', skyMid: '#ff7030', skyBot: '#ffb040',
+    enemies: [
+      { x: 100, minX: 85,  maxX: 148, y: 282, speed: 1.2 },
+      { x: 308, minX: 300, maxX: 360, y: 238, speed: 1.5 },
+      { x: 760, minX: 755, maxX: 808, y: 258, speed: 1.8 },
+      { x: 1185, minX: 1178, maxX: 1240, y: 175, speed: 2.0 },
+      { x: 1640, minX: 1635, maxX: 1690, y: 174, speed: 1.6 },
+    ],
     platforms: [
       { x: 0,    y: 410, w: 170, h: 12, curve: true },
       { x: 310,  y: 415, w: 145, h: 12, curve: true },
@@ -160,6 +168,14 @@ const LEVELS = [
   {
     worldW: 2200,
     skyTop: '#040818', skyMid: '#080e28', skyBot: '#04060e',
+    enemies: [
+      { x: 80,   minX: 72,   maxX: 122,  y: 284, speed: 1.6 },
+      { x: 520,  minX: 512,  maxX: 560,  y: 192, speed: 2.0 },
+      { x: 970,  minX: 964,  maxX: 1012, y: 210, speed: 2.2 },
+      { x: 1425, minX: 1418, maxX: 1460, y: 129, speed: 2.4 },
+      { x: 1895, minX: 1888, maxX: 1930, y: 129, speed: 2.0 },
+      { x: 2095, minX: 2090, maxX: 2188, y: 64,  speed: 2.6 },
+    ],
     platforms: [
       { x: 0,    y: 410, w: 138, h: 12, curve: true },
       { x: 298,  y: 415, w: 112, h: 12, curve: true },
@@ -236,6 +252,7 @@ let WORLD_W = 1800;
 let platforms = [];
 let coinItems  = [];
 let fallingSpikes = [];
+let enemies = [];
 let door = { x: 0, y: 0, w: 38, h: 56 };
 
 // ── Background Music ──────────────────────────────────────────────────────────
@@ -303,6 +320,7 @@ function loadLevel(n) {
   platforms = lvl.platforms;
   coinItems = lvl.coins.map(function(c) { return { x: c.x, y: c.y, collected: false }; });
   fallingSpikes = lvl.spikes.map(function(s) { return { x: s.x, y: s.y, speed: s.speed, w: s.w, h: s.h }; });
+  enemies = (lvl.enemies || []).map(function(e) { return { x: e.x, y: e.y, minX: e.minX, maxX: e.maxX, speed: e.speed, vx: e.speed, w: 20, h: 36, facing: 1, walkFrame: 0, walkTimer: 0 }; });
   door = { x: lvl.door.x, y: lvl.door.y, w: lvl.door.w, h: lvl.door.h };
   player.x = 80; player.y = 350;
   player.vx = 0; player.vy = 0;
@@ -529,6 +547,32 @@ function update() {
     }
   }
 
+  // Enemies
+  for (let i = 0; i < enemies.length; i++) {
+    const en = enemies[i];
+    en.x += en.vx;
+    if (en.x >= en.maxX || en.x <= en.minX) {
+      en.vx = -en.vx;
+      en.facing = en.vx > 0 ? 1 : -1;
+    }
+    en.facing = en.vx > 0 ? 1 : -1;
+    en.walkTimer++;
+    if (en.walkTimer > 6) { en.walkFrame = (en.walkFrame + 1) % 4; en.walkTimer = 0; }
+    if (player.hitCooldown <= 0 &&
+        player.x + player.w > en.x &&
+        player.x < en.x + en.w &&
+        player.y + player.h > en.y &&
+        player.y < en.y + en.h) {
+      lives--;
+      document.getElementById('lives').textContent = String(lives);
+      spawnParticles(player.x + player.w / 2, player.y, '#ff4444');
+      playSfx('hurt');
+      player.vy = -8;
+      player.hitCooldown = 90;
+      if (lives <= 0) { gameOver = true; playSfx('gameover'); return; }
+    }
+  }
+
   // Door collision
   const allCoins = coinItems.every(function(c) { return c.collected; });
   if (
@@ -652,6 +696,66 @@ function drawStickFigure(x, y, facing, walkFrame, airborne) {
   ctx.beginPath(); ctx.arc(cx + facing * 3, y + 7, 1.5, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#fff';
   ctx.beginPath(); ctx.arc(cx + facing * 2.4, y + 6.5, 0.6, 0, Math.PI * 2); ctx.fill();
+
+  ctx.restore();
+}
+
+function drawEnemy(x, y, facing, walkFrame) {
+  const cx = x + 10;
+  ctx.save();
+  const swing = Math.sin(walkFrame / 4 * Math.PI * 2);
+  const legA = swing * 24;
+  const armA = -swing * 20;
+
+  function limb(px, py, angleDeg, len, wid, light, dark) {
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(angleDeg * Math.PI / 180);
+    const g = ctx.createLinearGradient(-wid / 2, 0, wid / 2, 0);
+    g.addColorStop(0, dark); g.addColorStop(0.45, light); g.addColorStop(1, dark);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.roundRect(-wid / 2, 0, wid, len, wid / 3); ctx.fill();
+    ctx.restore();
+  }
+
+  const hipX = cx, hipY = y + 22, shlX = cx, shlY = y + 14;
+  limb(hipX - 2 * facing, hipY, -legA, 14, 7, '#8b0000', '#3a0000');
+  limb(shlX - 5 * facing, shlY, -armA * facing, 11, 5, '#cc2200', '#660000');
+
+  const tg = ctx.createLinearGradient(cx - 8, 0, cx + 8, 0);
+  tg.addColorStop(0, '#3a0000'); tg.addColorStop(0.45, '#880000'); tg.addColorStop(1, '#3a0000');
+  ctx.fillStyle = tg;
+  ctx.beginPath(); ctx.roundRect(cx - 7, y + 13, 14, 11, 3); ctx.fill();
+
+  limb(hipX + 2 * facing, hipY, legA, 14, 7, '#8b0000', '#3a0000');
+  limb(shlX + 5 * facing, shlY, armA * facing, 11, 5, '#cc2200', '#660000');
+
+  [[-1, -legA], [1, legA]].forEach(function(pair) {
+    const side = pair[0], ang = pair[1];
+    ctx.save();
+    ctx.translate(hipX + side * 2 * facing, hipY);
+    ctx.rotate(ang * Math.PI / 180);
+    ctx.fillStyle = '#1a0000';
+    ctx.beginPath(); ctx.roundRect(-4, 12, 11, 4, 2); ctx.fill();
+    ctx.restore();
+  });
+
+  // Head
+  const hg = ctx.createRadialGradient(cx - 2, y + 5, 1, cx, y + 7, 7);
+  hg.addColorStop(0, '#e06040'); hg.addColorStop(0.65, '#a03020'); hg.addColorStop(1, '#601808');
+  ctx.fillStyle = hg;
+  ctx.beginPath(); ctx.arc(cx, y + 7, 7, 0, Math.PI * 2); ctx.fill();
+
+  // Horns
+  ctx.fillStyle = '#ff6600';
+  ctx.beginPath(); ctx.moveTo(cx - 5, y + 2); ctx.lineTo(cx - 3, y - 6); ctx.lineTo(cx - 1, y + 1); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cx + 5, y + 2); ctx.lineTo(cx + 3, y - 6); ctx.lineTo(cx + 1, y + 1); ctx.fill();
+
+  // Glowing eyes
+  ctx.fillStyle = '#ffcc00';
+  ctx.shadowColor = '#ff4400'; ctx.shadowBlur = 6;
+  ctx.beginPath(); ctx.arc(cx + facing * 3, y + 7, 2, 0, Math.PI * 2); ctx.fill();
+  ctx.shadowBlur = 0;
 
   ctx.restore();
 }
@@ -947,6 +1051,13 @@ function draw() {
     if (s.x > cameraX - 20 && s.x < cameraX + W + 20) {
       drawFallingSpike(s.x, s.y, s.w, s.h);
     }
+  }
+
+  // Enemies
+  for (let i = 0; i < enemies.length; i++) {
+    const en = enemies[i];
+    if (en.x + en.w < cameraX - 10 || en.x > cameraX + W + 10) continue;
+    drawEnemy(en.x, en.y, en.facing, en.walkFrame);
   }
 
   // Coins
