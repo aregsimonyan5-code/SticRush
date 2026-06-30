@@ -226,25 +226,7 @@
           { x: 454, y: 99 }, { x: 881, y: 123 },
           { x: 1091, y: 89 }, { x: 1508, y: 72 },
         ],
-        spikes: [
-          { x: 95, y: -40, speed: 3.4, w: 12, h: 18 },
-          { x: 218, y: -130, speed: 2.9, w: 12, h: 18 },
-          { x: 358, y: -210, speed: 3.8, w: 12, h: 18 },
-          { x: 478, y: -90, speed: 3.2, w: 12, h: 18 },
-          { x: 598, y: -170, speed: 4.1, w: 12, h: 18 },
-          { x: 720, y: -50, speed: 3.0, w: 12, h: 18 },
-          { x: 828, y: -250, speed: 3.6, w: 12, h: 18 },
-          { x: 958, y: -110, speed: 3.3, w: 12, h: 18 },
-          { x: 1068, y: -190, speed: 3.9, w: 12, h: 18 },
-          { x: 1178, y: -70, speed: 3.2, w: 12, h: 18 },
-          { x: 1308, y: -150, speed: 3.7, w: 12, h: 18 },
-          { x: 1438, y: -230, speed: 2.9, w: 12, h: 18 },
-          { x: 1558, y: -90, speed: 3.5, w: 12, h: 18 },
-          { x: 1668, y: -170, speed: 4.1, w: 12, h: 18 },
-          { x: 1778, y: -50, speed: 3.3, w: 12, h: 18 },
-          { x: 1888, y: -140, speed: 3.8, w: 12, h: 18 },
-          { x: 1978, y: -220, speed: 2.7, w: 12, h: 18 },
-        ],
+        spikes: [],
         door: { x: 1760, y: 4, w: 38, h: 56 },
       },
 
@@ -297,28 +279,7 @@
           { x: 847, y: 114 }, { x: 1062, y: 78 }, { x: 1504, y: 61 },
           { x: 2125, y: 78 },
         ],
-        spikes: [
-          { x: 88, y: -40, speed: 3.8, w: 12, h: 18 },
-          { x: 208, y: -120, speed: 3.2, w: 12, h: 18 },
-          { x: 348, y: -200, speed: 4.3, w: 12, h: 18 },
-          { x: 458, y: -80, speed: 3.6, w: 12, h: 18 },
-          { x: 578, y: -160, speed: 4.7, w: 12, h: 18 },
-          { x: 698, y: -40, speed: 3.1, w: 12, h: 18 },
-          { x: 808, y: -240, speed: 4.1, w: 12, h: 18 },
-          { x: 938, y: -100, speed: 3.7, w: 12, h: 18 },
-          { x: 1048, y: -180, speed: 4.4, w: 12, h: 18 },
-          { x: 1158, y: -60, speed: 3.4, w: 12, h: 18 },
-          { x: 1298, y: -140, speed: 4.2, w: 12, h: 18 },
-          { x: 1428, y: -220, speed: 3.3, w: 12, h: 18 },
-          { x: 1558, y: -80, speed: 4.0, w: 12, h: 18 },
-          { x: 1668, y: -160, speed: 4.8, w: 12, h: 18 },
-          { x: 1788, y: -40, speed: 3.5, w: 12, h: 18 },
-          { x: 1908, y: -140, speed: 4.3, w: 12, h: 18 },
-          { x: 2018, y: -220, speed: 3.9, w: 12, h: 18 },
-          { x: 2128, y: -80, speed: 4.5, w: 12, h: 18 },
-          { x: 2178, y: -180, speed: 3.6, w: 12, h: 18 },
-          { x: 338, y: -300, speed: 2.9, w: 12, h: 18 },
-        ],
+        spikes: [],
         door: { x: 2150, y: 44, w: 38, h: 56 },
       },
     ];
@@ -787,10 +748,12 @@
     function drawEnemy(x, y, facing, walkFrame) {
       const bob = Math.sin(walkFrame / 4 * Math.PI * 2) * 1.5;
       const legSwing = Math.sin(walkFrame / 4 * Math.PI * 2);
-      // centre of the creature
       const cx = x + 11;
       const cy = y + 14 + bob;
       ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(0.55, 0.55);
+      ctx.translate(-cx, -cy);
 
       // ── Stubby legs ──
       ctx.fillStyle = '#c8a010';
