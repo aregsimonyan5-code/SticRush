@@ -121,6 +121,28 @@
     #m-pause:active {
       background: rgba(100, 100, 220, 0.65);
     }
+
+    #skin-btn {
+      position: fixed;
+      top: 48px;
+      right: 12px;
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13px;
+      font-family: monospace;
+      font-weight: bold;
+      padding: 6px 10px;
+      cursor: pointer;
+      z-index: 30;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #skin-btn:active {
+      background: rgba(255,255,255,0.2);
+    }
   </style>
 </head>
 
@@ -138,6 +160,7 @@
   <div id="m-jump" class="m-btn">↑</div>
   <div id="m-shoot" class="m-btn">🔫</div>
   <div id="m-pause" class="m-btn">⏸</div>
+  <div id="skin-btn" onclick="playerSkin = playerSkin === 'mario' ? 'luigi' : 'mario'; this.textContent = playerSkin === 'luigi' ? '🟢 Luigi' : '🔴 Mario'">🔴 Mario</div>
   <div id="controls">← → Move &nbsp;|&nbsp; SPACE / ↑ Jump &nbsp;|&nbsp; Double jump! &nbsp;|&nbsp; <b>F</b> Shoot (lvl 3) &nbsp;|&nbsp; Collect all coins then reach the door!</div>
 
   <script>
@@ -321,6 +344,7 @@
     let gameOver = false, levelComplete = false, finalWin = false;
     let menuActive = true;
     let paused = false;
+    let playerSkin = 'mario'; // 'mario' | 'luigi'
     let cameraX = 0;
     let shakeMag = 0;
 
@@ -994,6 +1018,131 @@
       ctx.restore();
     }
 
+    function drawLuigi(x, y, facing, walkFrame, airborne) {
+      const cx = x + 10;
+      ctx.save();
+
+      const swing = airborne ? 0 : Math.sin(walkFrame / 4 * Math.PI * 2);
+      const legSwing = airborne ? 20 : swing * 28;
+      const armSwing = airborne ? -35 : -swing * 22;
+
+      // ── Shoes (brown, same as Mario) ──
+      [[- 1, -legSwing], [1, legSwing]].forEach(function (pair) {
+        const side = pair[0], ang = pair[1];
+        ctx.save();
+        ctx.translate(cx + side * 2 * facing, y + 22);
+        ctx.rotate(ang * Math.PI / 180);
+        ctx.fillStyle = '#5c3010';
+        ctx.beginPath(); ctx.roundRect(-4, 11, 12, 5, 2); ctx.fill();
+        ctx.fillStyle = '#3a1a06';
+        ctx.beginPath(); ctx.ellipse(facing > 0 ? 6 : 2, 14, 3, 2, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      });
+
+      // ── Back leg (blue overalls) ──
+      ctx.save();
+      ctx.translate(cx - 2 * facing, y + 22);
+      ctx.rotate(-legSwing * Math.PI / 180);
+      ctx.fillStyle = '#253a8a';
+      ctx.beginPath(); ctx.roundRect(-4, 0, 8, 13, 3); ctx.fill();
+      ctx.restore();
+
+      // ── Back arm (green shirt) ──
+      ctx.save();
+      ctx.translate(cx - 5 * facing, y + 15);
+      ctx.rotate(-armSwing * facing * Math.PI / 180);
+      ctx.fillStyle = '#2a8a20';
+      ctx.beginPath(); ctx.roundRect(-3, 0, 6, 10, 2); ctx.fill();
+      // white glove
+      ctx.fillStyle = '#f0f0f0';
+      ctx.beginPath(); ctx.ellipse(0, 11, 3.5, 3.5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      // ── Overalls bib (blue) ──
+      ctx.fillStyle = '#253a8a';
+      ctx.beginPath(); ctx.roundRect(cx - 6, y + 14, 12, 10, 2); ctx.fill();
+      // bib straps
+      ctx.fillStyle = '#253a8a';
+      ctx.fillRect(cx - 5, y + 11, 3, 5);
+      ctx.fillRect(cx + 2, y + 11, 3, 5);
+      // yellow buttons
+      ctx.fillStyle = '#f5c518';
+      ctx.beginPath(); ctx.arc(cx - 2, y + 15, 1.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx + 2, y + 15, 1.5, 0, Math.PI * 2); ctx.fill();
+
+      // ── Green shirt body ──
+      ctx.fillStyle = '#2a8a20';
+      ctx.beginPath(); ctx.roundRect(cx - 7, y + 12, 14, 8, 3); ctx.fill();
+
+      // ── Front leg (blue overalls) ──
+      ctx.save();
+      ctx.translate(cx + 2 * facing, y + 22);
+      ctx.rotate(legSwing * Math.PI / 180);
+      ctx.fillStyle = '#253a8a';
+      ctx.beginPath(); ctx.roundRect(-4, 0, 8, 13, 3); ctx.fill();
+      ctx.restore();
+
+      // ── Front arm (green shirt) ──
+      ctx.save();
+      ctx.translate(cx + 5 * facing, y + 15);
+      ctx.rotate(armSwing * facing * Math.PI / 180);
+      ctx.fillStyle = '#2a8a20';
+      ctx.beginPath(); ctx.roundRect(-3, 0, 6, 10, 2); ctx.fill();
+      // white glove
+      ctx.fillStyle = '#f0f0f0';
+      ctx.beginPath(); ctx.ellipse(0, 11, 3.5, 3.5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      // ── Face ──
+      ctx.fillStyle = '#f5c98a';
+      ctx.beginPath(); ctx.ellipse(cx, y + 7, 7, 7, 0, 0, Math.PI * 2); ctx.fill();
+
+      // ── Ear ──
+      ctx.fillStyle = '#e8b87a';
+      ctx.beginPath(); ctx.ellipse(cx - facing * 6, y + 7, 2.5, 2.5, 0, 0, Math.PI * 2); ctx.fill();
+
+      // ── Nose (big, Luigi-style) ──
+      ctx.fillStyle = '#e8906a';
+      ctx.beginPath(); ctx.ellipse(cx + facing * 3, y + 8, 3.5, 2.5, facing * 0.2, 0, Math.PI * 2); ctx.fill();
+
+      // ── Dark mustache ──
+      ctx.fillStyle = '#1a0a00';
+      ctx.beginPath(); ctx.ellipse(cx + facing * 1, y + 10.5, 4.5, 2.2, -facing * 0.15, 0, Math.PI); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx + facing * 5.5, y + 10.5, 3.2, 2, facing * 0.15, 0, Math.PI); ctx.fill();
+
+      // ── Blue eyes ──
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(cx + facing * 3, y + 5.5, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#3a7aee';
+      ctx.beginPath(); ctx.arc(cx + facing * 3, y + 5.5, 1.3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(cx + facing * 2.4, y + 5, 0.7, 0, Math.PI * 2); ctx.fill();
+
+      // ── Eyebrow ──
+      ctx.strokeStyle = '#1a0a00'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(cx + facing * 1.5, y + 3.5);
+      ctx.lineTo(cx + facing * 5, y + 3);
+      ctx.stroke();
+
+      // ── Green cap ──
+      ctx.fillStyle = '#1a7a10';
+      // brim
+      ctx.beginPath(); ctx.ellipse(cx + facing * 2, y + 2, 9, 2.5, -facing * 0.1, 0, Math.PI * 2); ctx.fill();
+      // dome
+      ctx.beginPath(); ctx.ellipse(cx - facing * 1, y - 3, 8, 6, 0, Math.PI, 0); ctx.fill();
+      // highlight
+      ctx.fillStyle = '#2aaa20';
+      ctx.beginPath(); ctx.ellipse(cx - facing * 3, y - 4, 3, 2, -0.3, Math.PI, 0); ctx.fill();
+
+      // ── L logo on cap ──
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 6px monospace'; ctx.textAlign = 'center';
+      ctx.fillText('L', cx - facing * 1, y - 1);
+
+      ctx.restore();
+    }
+
     function drawEnemy(x, y, facing, walkFrame) {
       const bob = 0;
       const legSwing = Math.sin(walkFrame / 4 * Math.PI * 2);
@@ -1637,7 +1786,11 @@
 
       // Player (blink when hit)
       if (player.hitCooldown === 0 || Math.floor(player.hitCooldown / 6) % 2 === 0) {
-        drawStickFigure(player.x, player.y, player.facing, player.walkFrame, !player.onGround);
+        if (playerSkin === 'luigi') {
+          drawLuigi(player.x, player.y, player.facing, player.walkFrame, !player.onGround);
+        } else {
+          drawStickFigure(player.x, player.y, player.facing, player.walkFrame, !player.onGround);
+        }
         // Gun (level 3 only)
         if (currentLevel === 2) {
           const gx = player.x + player.w / 2 + player.facing * 4;
