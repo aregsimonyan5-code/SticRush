@@ -122,26 +122,38 @@
       background: rgba(100, 100, 220, 0.65);
     }
 
-    #skin-btn {
+    #skin-bar {
       position: fixed;
-      top: 48px;
-      right: 12px;
+      top: 44px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      z-index: 30;
+    }
+
+    .skin-btn {
       background: rgba(0,0,0,0.45);
-      border: 2px solid rgba(255,255,255,0.4);
+      border: 2px solid rgba(255,255,255,0.3);
       border-radius: 10px;
-      color: #fff;
+      color: rgba(255,255,255,0.7);
       font-size: 13px;
       font-family: monospace;
       font-weight: bold;
-      padding: 6px 10px;
+      padding: 6px 11px;
       cursor: pointer;
-      z-index: 30;
       user-select: none;
       -webkit-user-select: none;
+      transition: background 0.1s, border-color 0.1s, color 0.1s;
     }
 
-    #skin-btn:active {
-      background: rgba(255,255,255,0.2);
+    .skin-btn.active {
+      background: rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.85);
+      color: #fff;
+    }
+
+    .skin-btn:active {
+      background: rgba(255,255,255,0.3);
     }
   </style>
 </head>
@@ -160,7 +172,10 @@
   <div id="m-jump" class="m-btn">↑</div>
   <div id="m-shoot" class="m-btn">🔫</div>
   <div id="m-pause" class="m-btn">⏸</div>
-  <div id="skin-btn" onclick="playerSkin = playerSkin === 'mario' ? 'luigi' : 'mario'; this.textContent = playerSkin === 'luigi' ? '🟢 Luigi' : '🔴 Mario'">🔴 Mario</div>
+  <div id="skin-bar">
+    <div class="skin-btn active" id="skin-mario" onclick="setSkin('mario')">🔴 Mario</div>
+    <div class="skin-btn" id="skin-luigi" onclick="setSkin('luigi')">🟢 Luigi</div>
+  </div>
   <div id="controls">← → Move &nbsp;|&nbsp; SPACE / ↑ Jump &nbsp;|&nbsp; Double jump! &nbsp;|&nbsp; <b>F</b> Shoot (lvl 3) &nbsp;|&nbsp; Collect all coins then reach the door!</div>
 
   <script>
@@ -345,6 +360,12 @@
     let menuActive = true;
     let paused = false;
     let playerSkin = 'mario'; // 'mario' | 'luigi'
+
+    function setSkin(skin) {
+      playerSkin = skin;
+      document.getElementById('skin-mario').classList.toggle('active', skin === 'mario');
+      document.getElementById('skin-luigi').classList.toggle('active', skin === 'luigi');
+    }
     let cameraX = 0;
     let shakeMag = 0;
 
