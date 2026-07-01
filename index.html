@@ -112,8 +112,8 @@
   <div id="m-left" class="m-btn">◀</div>
   <div id="m-right" class="m-btn">▶</div>
   <div id="m-jump" class="m-btn">↑</div>
-  <div id="controls">← → Move &nbsp;|&nbsp; SPACE / ↑ Jump &nbsp;|&nbsp; Double jump! &nbsp;|&nbsp; Collect all coins
-    then reach the door!</div>
+  <div id="m-shoot" class="m-btn" style="display:none">🔫</div>
+  <div id="controls">← → Move &nbsp;|&nbsp; SPACE / ↑ Jump &nbsp;|&nbsp; Double jump! &nbsp;|&nbsp; <b>F</b> Shoot (lvl 3) &nbsp;|&nbsp; Collect all coins then reach the door!</div>
 
   <script>
     const canvas = document.getElementById('c');
@@ -280,6 +280,11 @@
           { x: 2125, y: 78 },
         ],
         spikes: [],
+        patrons: [
+          { x: 150, y: 295 }, { x: 320, y: 246 }, { x: 550, y: 203 },
+          { x: 780, y: 262 }, { x: 1000, y: 221 }, { x: 1210, y: 180 },
+          { x: 1450, y: 140 }, { x: 1690, y: 180 }, { x: 1920, y: 140 },
+        ],
         door: { x: 2150, y: 44, w: 38, h: 56 },
         boss: { x: 2200, y: 58, w: 50, h: 42, minX: 2095, maxX: 2210, speed: 1.2, maxHp: 5, fireRate: 180 },
       },
@@ -304,6 +309,12 @@
     // Boss state
     let boss = null;
     let fireballs = [];
+
+    // Level 3 gun state
+    let patronItems = [];
+    let playerBullets = [];
+    let playerAmmo = 0;
+    let shootCooldown = 0;
 
     // ── Background Music ──────────────────────────────────────────────────────────
     let audioCtx = null, musicStarted = false;
@@ -378,6 +389,12 @@
         boss = null;
       }
       fireballs = [];
+      patronItems = (lvl.patrons || []).map(function (p) { return { x: p.x, y: p.y, collected: false }; });
+      playerBullets = [];
+      playerAmmo = 0;
+      shootCooldown = 0;
+      // show/hide shoot button
+      document.getElementById('m-shoot').style.display = lvl.patrons ? 'flex' : 'none';
       player.x = 80; player.y = 350;
       player.vx = 0; player.vy = 0;
       player.onGround = false; player.jumpsLeft = 2;
@@ -446,6 +463,7 @@
     }
     setupMoveBtn('m-left', 'ArrowLeft');
     setupMoveBtn('m-right', 'ArrowRight');
+    setupMoveBtn('m-shoot', 'KeyF');
 
     document.getElementById('m-jump').addEventListener('pointerdown', function (e) {
       e.preventDefault();
@@ -581,6 +599,53 @@
         }
       }
 
+      // Patron (ammo) collection
+      for (let i = 0; i < patronItems.length; i++) {
+        const pt = patronItems[i];
+        if (!pt.collected) {
+          const dx = (player.x + player.w / 2) - pt.x;
+          const dy = (player.y + player.h / 2) - pt.y;
+          if (Math.abs(dx) < 18 && Math.abs(dy) < 18) {
+            pt.collected = true;
+            playerAmmo += 3;
+            spawnParticles(pt.x, pt.y, '#ffdd44');
+            playSfx('coin');
+          }
+        }
+      }
+
+      // Shooting
+      if (shootCooldown > 0) shootCooldown--;
+      if (keys['KeyF'] && playerAmmo > 0 && shootCooldown === 0 && !gameOver && !finalWin && !levelComplete) {
+        playerAmmo--;
+        shootCooldown = 18;
+        playerBullets.push({ x: player.x + (player.facing > 0 ? player.w : 0), y: player.y + player.h / 2, vx: player.facing * 10, life: 120 });
+        playSfx('jump');
+      }
+
+      // Player bullet update
+      playerBullets = playerBullets.filter(function (b) { return b.life > 0; });
+      for (let i = 0; i < playerBullets.length; i++) {
+        const b = playerBullets[i];
+        b.x += b.vx; b.life--;
+        if (boss && boss.hp > 0 && boss.hitCooldown === 0 &&
+          b.x > boss.x && b.x < boss.x + boss.w &&
+          b.y > boss.y && b.y < boss.y + boss.h) {
+          b.life = 0;
+          boss.hp--;
+          boss.hitCooldown = 40;
+          spawnParticles(boss.x + boss.w / 2, boss.y + boss.h / 2, '#ff6600');
+          playSfx('coin');
+          if (boss.hp <= 0) {
+            spawnParticles(boss.x + boss.w / 2, boss.y, '#ffaa00');
+            spawnParticles(boss.x + boss.w / 2, boss.y, '#ff4400');
+            score += 2000;
+            document.getElementById('score').textContent = String(score);
+            playSfx('win');
+          }
+        }
+      }
+
       if (player.hitCooldown > 0) player.hitCooldown--;
 
       // Falling spikes
@@ -646,26 +711,7 @@
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
           fireballs.push({ x: boss.x + boss.w / 2, y: boss.y + boss.h / 2, vx: (dx / dist) * 4, vy: (dy / dist) * 3, life: 200 });
         }
-        // player stomps boss (jump on top)
         if (player.hitCooldown <= 0 &&
-          player.x + player.w > boss.x + 6 &&
-          player.x < boss.x + boss.w - 6 &&
-          player.y + player.h > boss.y &&
-          player.y + player.h < boss.y + 18 &&
-          player.vy > 0) {
-          boss.hp--;
-          player.vy = -10;
-          spawnParticles(boss.x + boss.w / 2, boss.y, '#ff6600');
-          playSfx('coin');
-          boss.hitCooldown = 40;
-          if (boss.hp <= 0) {
-            spawnParticles(boss.x + boss.w / 2, boss.y, '#ffaa00');
-            spawnParticles(boss.x + boss.w / 2, boss.y, '#ff4400');
-            score += 2000;
-            document.getElementById('score').textContent = String(score);
-            playSfx('win');
-          }
-        } else if (player.hitCooldown <= 0 &&
           player.x + player.w > boss.x &&
           player.x < boss.x + boss.w &&
           player.y + player.h > boss.y &&
@@ -1400,6 +1446,39 @@
         ctx.restore();
       }
 
+      // Patron pickups
+      for (let i = 0; i < patronItems.length; i++) {
+        const pt = patronItems[i];
+        if (pt.collected) continue;
+        if (pt.x < cameraX - 20 || pt.x > cameraX + W + 20) continue;
+        const ptBob = Math.sin(coinAnim * 1.4 + pt.x * 0.05) * 3;
+        ctx.save();
+        ctx.shadowColor = '#ffdd44'; ctx.shadowBlur = 10;
+        // Bullet casing shape
+        ctx.fillStyle = '#ddaa10';
+        ctx.beginPath(); ctx.roundRect(pt.x - 5, pt.y + ptBob - 9, 10, 18, 2); ctx.fill();
+        ctx.fillStyle = '#ffcc00';
+        ctx.beginPath(); ctx.ellipse(pt.x, pt.y + ptBob - 9, 5, 4, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#cc8800';
+        ctx.fillRect(pt.x - 4, pt.y + ptBob - 6, 8, 12);
+        ctx.fillStyle = '#ffee66';
+        ctx.fillRect(pt.x - 2, pt.y + ptBob - 5, 3, 8);
+        ctx.restore();
+      }
+
+      // Player bullets
+      for (let i = 0; i < playerBullets.length; i++) {
+        const b = playerBullets[i];
+        if (b.x < cameraX - 20 || b.x > cameraX + W + 20) continue;
+        ctx.save();
+        ctx.shadowColor = '#ffee00'; ctx.shadowBlur = 8;
+        ctx.fillStyle = '#ffee44';
+        ctx.beginPath(); ctx.ellipse(b.x, b.y, 6, 3, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.ellipse(b.x - b.vx * 0.3, b.y, 3, 1.5, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+
       // Door
       if (!finalWin) {
         const doorUnlocked = coinItems.every(function (c) { return c.collected; }) && (!boss || boss.hp <= 0);
@@ -1438,6 +1517,32 @@
       // Player (blink when hit)
       if (player.hitCooldown === 0 || Math.floor(player.hitCooldown / 6) % 2 === 0) {
         drawStickFigure(player.x, player.y, player.facing, player.walkFrame, !player.onGround);
+        // Gun (level 3 only)
+        if (currentLevel === 2) {
+          const gx = player.x + player.w / 2 + player.facing * 4;
+          const gy = player.y + 16;
+          ctx.save();
+          ctx.translate(gx, gy);
+          ctx.scale(player.facing, 1);
+          // barrel
+          ctx.fillStyle = '#222';
+          ctx.fillRect(2, -2, 14, 4);
+          // muzzle
+          ctx.fillStyle = '#444';
+          ctx.fillRect(14, -3, 4, 6);
+          // grip/body
+          ctx.fillStyle = '#555';
+          ctx.fillRect(0, -3, 10, 7);
+          // grip handle
+          ctx.fillStyle = '#333';
+          ctx.fillRect(3, 3, 5, 6);
+          // ammo empty indicator
+          if (playerAmmo === 0) {
+            ctx.fillStyle = 'rgba(255,60,60,0.85)';
+            ctx.beginPath(); ctx.arc(8, -5, 3, 0, Math.PI * 2); ctx.fill();
+          }
+          ctx.restore();
+        }
       }
 
       // Double-jump indicator
@@ -1459,6 +1564,22 @@
       pg.addColorStop(0, '#44aaff'); pg.addColorStop(1, '#66ffaa');
       ctx.fillStyle = pg;
       ctx.fillRect(10, H - 18, (W - 20) * progress, 8);
+
+      // Ammo HUD (level 3)
+      if (currentLevel === 2) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(8, 30, 90, 22);
+        ctx.fillStyle = playerAmmo > 0 ? '#ffee44' : '#ff4444';
+        ctx.font = 'bold 13px monospace'; ctx.textAlign = 'left';
+        ctx.fillText('🔫 x' + playerAmmo, 14, 46);
+        if (playerAmmo === 0) {
+          ctx.fillStyle = '#ff8888';
+          ctx.font = '10px monospace';
+          ctx.fillText('collect ammo!', 14, 58);
+        }
+        ctx.restore();
+      }
 
       // Boss HP bar
       if (boss && boss.hp > 0) {
