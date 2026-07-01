@@ -132,10 +132,10 @@
     }
 
     .skin-btn {
-      background: rgba(0,0,0,0.45);
-      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(0, 0, 0, 0.45);
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 10px;
-      color: rgba(255,255,255,0.7);
+      color: rgba(255, 255, 255, 0.7);
       font-size: 13px;
       font-family: monospace;
       font-weight: bold;
@@ -147,13 +147,13 @@
     }
 
     .skin-btn.active {
-      background: rgba(255,255,255,0.22);
-      border-color: rgba(255,255,255,0.85);
+      background: rgba(255, 255, 255, 0.22);
+      border-color: rgba(255, 255, 255, 0.85);
       color: #fff;
     }
 
     .skin-btn:active {
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
     }
   </style>
 </head>
@@ -163,8 +163,7 @@
   <div id="score-bar">
     <span>🌟 Level <span id="level">1</span>/3</span>
     <span>⭐ Coins: <span id="coins">0</span></span>
-    <span>🔴 P1: <span id="lives">3</span>❤️</span>
-    <span>🟢 P2: <span id="lives2">3</span>❤️</span>
+    <span>❤️ Lives: <span id="lives">3</span></span>
     <span>🏆 Score: <span id="score">0</span></span>
   </div>
   <canvas id="c"></canvas>
@@ -177,7 +176,7 @@
     <div class="skin-btn active" id="skin-mario" onclick="setSkin('mario')">🔴 Mario</div>
     <div class="skin-btn" id="skin-luigi" onclick="setSkin('luigi')">🟢 Luigi</div>
   </div>
-  <div id="controls">← → Move &nbsp;|&nbsp; SPACE / ↑ Jump &nbsp;|&nbsp; Double jump! &nbsp;|&nbsp; <b>F</b> Shoot (lvl 3) &nbsp;|&nbsp; Collect all coins then reach the door!</div>
+  <div id="controls">← → / WASD Move &nbsp;|&nbsp; SPACE / W / ↑ Jump &nbsp;|&nbsp; F Shoot (lvl 3)</div>
 
   <script>
     const canvas = document.getElementById('c');
@@ -251,9 +250,9 @@
         worldW: 2000,
         skyTop: '#c84010', skyMid: '#ff7030', skyBot: '#ffb040',
         enemies: [
-          { x: 100,  minX: 85,   maxX: 187,  y: 282, speed: 0.5 },
-          { x: 308,  minX: 300,  maxX: 397,  y: 238, speed: 0.5 },
-          { x: 760,  minX: 755,  maxX: 847,  y: 258, speed: 0.6 },
+          { x: 100, minX: 85, maxX: 187, y: 282, speed: 0.5 },
+          { x: 308, minX: 300, maxX: 397, y: 238, speed: 0.5 },
+          { x: 760, minX: 755, maxX: 847, y: 258, speed: 0.6 },
           { x: 1185, minX: 1178, maxX: 1280, y: 175, speed: 0.6 },
           { x: 1640, minX: 1635, maxX: 1727, y: 174, speed: 0.5 },
         ],
@@ -299,12 +298,12 @@
         worldW: 2200,
         skyTop: '#040818', skyMid: '#080e28', skyBot: '#04060e',
         enemies: [
-          { x: 80,   minX: 72,   maxX: 162,  y: 284, speed: 0.5 },
-          { x: 520,  minX: 512,  maxX: 596,  y: 192, speed: 0.6 },
-          { x: 970,  minX: 964,  maxX: 1048, y: 210, speed: 0.6 },
+          { x: 80, minX: 72, maxX: 162, y: 284, speed: 0.5 },
+          { x: 520, minX: 512, maxX: 596, y: 192, speed: 0.6 },
+          { x: 970, minX: 964, maxX: 1048, y: 210, speed: 0.6 },
           { x: 1425, minX: 1418, maxX: 1498, y: 129, speed: 0.7 },
           { x: 1895, minX: 1888, maxX: 1970, y: 129, speed: 0.6 },
-          { x: 2095, minX: 2090, maxX: 2242, y: 64,  speed: 0.7 },
+          { x: 2095, minX: 2090, maxX: 2242, y: 64, speed: 0.7 },
         ],
         platforms: [
           { x: 0, y: 410, w: 188, h: 12, curve: true },
@@ -398,38 +397,38 @@
 
       // Note frequencies
       const _ = 0;
-      const E3=164.81, G3=196.00, C4=261.63, E4=329.63, G4=392.00, A4=440.00,
-            Bb4=466.16, B4=493.88, C5=523.25, D5=587.33, E5=659.25, F5=698.46,
-            G5=783.99, A5=880.00;
+      const E3 = 164.81, G3 = 196.00, C4 = 261.63, E4 = 329.63, G4 = 392.00, A4 = 440.00,
+        Bb4 = 466.16, B4 = 493.88, C5 = 523.25, D5 = 587.33, E5 = 659.25, F5 = 698.46,
+        G5 = 783.99, A5 = 880.00;
 
       // BPM 200, eighth-note grid
       const T = 60 / 200 / 2;   // duration of one eighth note in seconds
 
       // Melody: [freq, eighths]
       const MEL = [
-        [E5,1],[E5,1],[_,1],[E5,1],[_,1],[C5,1],[E5,1],[_,1],
-        [G5,1],[_,3],[G4,1],[_,3],
-        [C5,1],[_,2],[G4,1],[_,2],[E4,1],[_,2],
-        [A4,1],[_,1],[B4,1],[_,1],[Bb4,1],[A4,1],
-        [G4,2],[E5,2],[G5,2],[A5,1],[_,1],[F5,1],[G5,1],
-        [_,1],[E5,1],[_,1],[C5,1],[D5,1],[B4,1],[_,2],
-        [C5,1],[_,2],[G4,1],[_,2],[E4,1],[_,2],
-        [A4,1],[_,1],[B4,1],[_,1],[Bb4,1],[A4,1],
-        [G4,2],[E5,2],[G5,2],[A5,1],[_,1],[F5,1],[G5,1],
-        [_,1],[E5,1],[_,1],[C5,1],[D5,1],[B4,1],[_,2],
+        [E5, 1], [E5, 1], [_, 1], [E5, 1], [_, 1], [C5, 1], [E5, 1], [_, 1],
+        [G5, 1], [_, 3], [G4, 1], [_, 3],
+        [C5, 1], [_, 2], [G4, 1], [_, 2], [E4, 1], [_, 2],
+        [A4, 1], [_, 1], [B4, 1], [_, 1], [Bb4, 1], [A4, 1],
+        [G4, 2], [E5, 2], [G5, 2], [A5, 1], [_, 1], [F5, 1], [G5, 1],
+        [_, 1], [E5, 1], [_, 1], [C5, 1], [D5, 1], [B4, 1], [_, 2],
+        [C5, 1], [_, 2], [G4, 1], [_, 2], [E4, 1], [_, 2],
+        [A4, 1], [_, 1], [B4, 1], [_, 1], [Bb4, 1], [A4, 1],
+        [G4, 2], [E5, 2], [G5, 2], [A5, 1], [_, 1], [F5, 1], [G5, 1],
+        [_, 1], [E5, 1], [_, 1], [C5, 1], [D5, 1], [B4, 1], [_, 2],
       ];
 
       // Bass: [freq, eighths]
       const BAS = [
-        [_,8],[_,8],
-        [C4,1],[E4,1],[G4,1],[_,1],[E4,1],[G4,1],[C4,1],[E4,1],
-        [A4,1],[C5,1],[E5,1],[_,1],[C5,1],[E5,1],[A4,1],[C5,1],
-        [B4,1],[D5,1],[F5,1],[_,1],[D5,1],[F5,1],[B4,1],[D5,1],
-        [_,8],
-        [C4,1],[E4,1],[G4,1],[_,1],[E4,1],[G4,1],[C4,1],[E4,1],
-        [A4,1],[C5,1],[E5,1],[_,1],[C5,1],[E5,1],[A4,1],[C5,1],
-        [B4,1],[D5,1],[F5,1],[_,1],[D5,1],[F5,1],[B4,1],[D5,1],
-        [_,8],
+        [_, 8], [_, 8],
+        [C4, 1], [E4, 1], [G4, 1], [_, 1], [E4, 1], [G4, 1], [C4, 1], [E4, 1],
+        [A4, 1], [C5, 1], [E5, 1], [_, 1], [C5, 1], [E5, 1], [A4, 1], [C5, 1],
+        [B4, 1], [D5, 1], [F5, 1], [_, 1], [D5, 1], [F5, 1], [B4, 1], [D5, 1],
+        [_, 8],
+        [C4, 1], [E4, 1], [G4, 1], [_, 1], [E4, 1], [G4, 1], [C4, 1], [E4, 1],
+        [A4, 1], [C5, 1], [E5, 1], [_, 1], [C5, 1], [E5, 1], [A4, 1], [C5, 1],
+        [B4, 1], [D5, 1], [F5, 1], [_, 1], [D5, 1], [F5, 1], [B4, 1], [D5, 1],
+        [_, 8],
       ];
 
       function makeStream(notes, type, vol) {
@@ -440,7 +439,7 @@
             const dur = n[1] * T;
             if (n[0] !== 0) {
               const osc = audioCtx.createOscillator();
-              const g   = audioCtx.createGain();
+              const g = audioCtx.createGain();
               osc.type = type;
               osc.frequency.value = n[0];
               g.gain.setValueAtTime(vol, t);
@@ -456,7 +455,7 @@
         tick();
       }
 
-      makeStream(MEL, 'square',   0.07);
+      makeStream(MEL, 'square', 0.07);
       makeStream(BAS, 'triangle', 0.09);
     }
 
@@ -470,26 +469,8 @@
       facing: 1,
       walkFrame: 0,
       walkTimer: 0,
-      hitCooldown: 0,
-      atDoor: false
+      hitCooldown: 0
     };
-
-    const player2 = {
-      x: 120, y: 350,
-      w: 20, h: 36,
-      vx: 0, vy: 0,
-      onGround: false,
-      jumpsLeft: 2,
-      facing: 1,
-      walkFrame: 0,
-      walkTimer: 0,
-      hitCooldown: 0,
-      atDoor: false
-    };
-
-    let lives2 = 3;
-    let p2shootCooldown = 0;
-    let p2Ammo = 0;
 
     // ── Load Level ────────────────────────────────────────────────────────────────
     function loadLevel(n) {
@@ -515,12 +496,7 @@
       player.x = 80; player.y = 350;
       player.vx = 0; player.vy = 0;
       player.onGround = false; player.jumpsLeft = 2;
-      player.facing = 1; player.walkFrame = 0; player.walkTimer = 0; player.hitCooldown = 0; player.atDoor = false;
-      player2.x = 120; player2.y = 350;
-      player2.vx = 0; player2.vy = 0;
-      player2.onGround = false; player2.jumpsLeft = 2;
-      player2.facing = 1; player2.walkFrame = 0; player2.walkTimer = 0; player2.hitCooldown = 0; player2.atDoor = false;
-      p2shootCooldown = 0; p2Ammo = 0;
+      player.facing = 1; player.walkFrame = 0; player.walkTimer = 0; player.hitCooldown = 0;
       cameraX = 0;
       particles = [];
       coins = 0;
@@ -621,31 +597,21 @@
         if (!gameOver && !finalWin) { paused = !paused; document.getElementById('m-pause').textContent = paused ? '▶' : '⏸'; }
         e.preventDefault(); return;
       }
-      if (!keys[e.code]) {
-        keys[e.code] = true;
+      if (e.code === 'KeyR') {
+        if (gameOver || finalWin) { restartGame(); e.preventDefault(); return; }
+        if (levelComplete) { nextLevel(); e.preventDefault(); return; }
+      }
+      if (!e.repeat) {
         startMusic();
-        if (e.code === 'KeyR') {
-          if (gameOver || finalWin) { restartGame(); return; }
-          if (levelComplete) { nextLevel(); return; }
-        }
-        if ((e.code === 'Space' || e.code === 'ArrowUp') && !gameOver && !finalWin && !levelComplete) {
+        if ((e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') && !gameOver && !finalWin && !levelComplete && !paused) {
           if (player.jumpsLeft > 0) {
             playSfx(player.jumpsLeft === 2 ? 'jump' : 'doublejump');
-            shakeMag = 5;
-            player.vy = -13;
-            player.jumpsLeft--;
+            shakeMag = 5; player.vy = -13; player.jumpsLeft--;
             spawnParticles(player.x + player.w / 2, player.y + player.h, '#aad');
           }
         }
-        if (e.code === 'KeyW' && !gameOver && !finalWin && !levelComplete) {
-          if (player2.jumpsLeft > 0) {
-            playSfx(player2.jumpsLeft === 2 ? 'jump' : 'doublejump');
-            player2.vy = -13;
-            player2.jumpsLeft--;
-            spawnParticles(player2.x + player2.w / 2, player2.y + player2.h, '#afa');
-          }
-        }
       }
+      keys[e.code] = true;
       e.preventDefault();
     });
     document.addEventListener('keyup', function (e) { keys[e.code] = false; });
@@ -664,38 +630,20 @@
       if (menuActive || gameOver || finalWin || levelComplete || paused) return;
 
       const speed = 4;
-      player.vx = 0;
-      if (keys['ArrowLeft'] || keys['KeyA']) { player.vx = -speed; player.facing = -1; }
-      if (keys['ArrowRight'] || keys['KeyD']) { player.vx = speed; player.facing = 1; }
 
+      // ── Player 1 (Arrow keys + WASD) ──
+      player.vx = 0;
+      if (keys['ArrowLeft']  || keys['KeyA']) { player.vx = -speed; player.facing = -1; }
+      if (keys['ArrowRight'] || keys['KeyD']) { player.vx =  speed; player.facing =  1; }
       if (player.vx !== 0 && player.onGround) {
         player.walkTimer++;
         if (player.walkTimer > 6) { player.walkFrame = (player.walkFrame + 1) % 4; player.walkTimer = 0; }
-      } else if (player.vx === 0) {
-        player.walkFrame = 0;
-      }
-
+      } else if (player.vx === 0) { player.walkFrame = 0; }
       player.vy += 0.55;
       player.x += player.vx;
       player.y += player.vy;
-
-      // World bounds
       if (player.x < 0) player.x = 0;
       if (player.x + player.w > WORLD_W) player.x = WORLD_W - player.w;
-
-      // Smooth camera
-      const targetCam = Math.max(0, Math.min(player.x - W / 2 + player.w / 2, WORLD_W - W));
-      cameraX += (targetCam - cameraX) * 0.12;
-
-      // Fell off bottom
-      if (player.y > H + 50) {
-        lives--;
-        document.getElementById('lives').textContent = String(lives);
-        if (lives <= 0) { gameOver = true; playSfx('gameover'); return; }
-        player.x = 80; player.y = 350; player.vy = 0; player.vx = 0;
-        cameraX = 0;
-        return;
-      }
 
       // Platform collision
       const wasOnGround = player.onGround;
@@ -753,15 +701,13 @@
         }
       }
 
-      // Shooting
+      // Shooting — P1 (F) / P2 (K)
       if (shootCooldown > 0) shootCooldown--;
       if (keys['KeyF'] && playerAmmo > 0 && shootCooldown === 0 && !gameOver && !finalWin && !levelComplete) {
-        playerAmmo--;
-        shootCooldown = 18;
+        playerAmmo--; shootCooldown = 18;
         playerBullets.push({ x: player.x + (player.facing > 0 ? player.w : 0), y: player.y + player.h / 2, vx: player.facing * 10, life: 120 });
         playSfx('jump');
       }
-
       // Player bullet update
       playerBullets = playerBullets.filter(function (b) { return b.life > 0; });
       for (let i = 0; i < playerBullets.length; i++) {
@@ -905,6 +851,22 @@
         } else {
           player.vx = -2;
         }
+      }
+
+      // Camera tracking
+      const targetCam = Math.max(0, Math.min(player.x - W / 2 + player.w / 2, WORLD_W - W));
+      cameraX += (targetCam - cameraX) * 0.12;
+
+      // Fell off bottom
+      if (player.y > H + 40) {
+        lives--;
+        document.getElementById('lives').textContent = String(lives);
+        spawnParticles(player.x + player.w / 2, player.y, '#ff4444');
+        playSfx('hurt');
+        if (lives <= 0) { gameOver = true; playSfx('gameover'); return; }
+        player.x = 80; player.y = 350;
+        player.vx = 0; player.vy = 0;
+        player.onGround = false; player.jumpsLeft = 2; player.hitCooldown = 0;
       }
 
       // Particles
@@ -1242,11 +1204,11 @@
 
       // ── Spikes ──
       const spikeDefs = [
-        { bx: cx,      by: cy - 10, tx: cx,      ty: cy - 22 },
-        { bx: cx - 8,  by: cy - 7,  tx: cx - 14, ty: cy - 17 },
-        { bx: cx + 8,  by: cy - 7,  tx: cx + 14, ty: cy - 17 },
-        { bx: cx - 12, by: cy - 2,  tx: cx - 20, ty: cy - 8  },
-        { bx: cx + 12, by: cy - 2,  tx: cx + 20, ty: cy - 8  },
+        { bx: cx, by: cy - 10, tx: cx, ty: cy - 22 },
+        { bx: cx - 8, by: cy - 7, tx: cx - 14, ty: cy - 17 },
+        { bx: cx + 8, by: cy - 7, tx: cx + 14, ty: cy - 17 },
+        { bx: cx - 12, by: cy - 2, tx: cx - 20, ty: cy - 8 },
+        { bx: cx + 12, by: cy - 2, tx: cx + 20, ty: cy - 8 },
       ];
       for (var si = 0; si < spikeDefs.length; si++) {
         var sp = spikeDefs[si];
@@ -1439,6 +1401,44 @@
       ctx.restore();
     }
 
+    // ── Stars ─────────────────────────────────────────────────────────────────────
+    const STARS = [];
+    (function () {
+      for (let i = 0; i < 80; i++) {
+        STARS.push({
+          x: Math.random() * W,
+          y: Math.random() * H * 0.72,
+          size: Math.random() < 0.15 ? 2.2 : 1.2,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.4 + Math.random() * 0.8,
+          cross: Math.random() < 0.2
+        });
+      }
+    })();
+
+    let starTick = 0;
+
+    function drawStars() {
+      starTick += 0.03;
+      for (let i = 0; i < STARS.length; i++) {
+        const s = STARS[i];
+        const brightness = 0.4 + 0.6 * Math.abs(Math.sin(starTick * s.speed + s.phase));
+        ctx.save();
+        ctx.globalAlpha = brightness;
+        ctx.fillStyle = '#ffffff';
+        if (s.cross) {
+          // cross/plus shape like the image
+          ctx.fillRect(s.x - s.size * 2, s.y - s.size * 0.4, s.size * 4, s.size * 0.8);
+          ctx.fillRect(s.x - s.size * 0.4, s.y - s.size * 2, s.size * 0.8, s.size * 4);
+        } else {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size * 0.7, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
     let coinAnim = 0;
 
     // ── Draw ──────────────────────────────────────────────────────────────────────
@@ -1456,6 +1456,12 @@
       sky.addColorStop(1, lvl.skyBot);
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, W, H);
+
+      // Stars (all levels, more visible on night sky)
+      ctx.save();
+      ctx.globalAlpha = currentLevel === 2 ? 1.0 : currentLevel === 1 ? 0.25 : 0.12;
+      drawStars();
+      ctx.restore();
 
       // Sun / moon glow
       if (currentLevel < 2) {
