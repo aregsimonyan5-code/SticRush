@@ -195,7 +195,7 @@
       // Level 1 — Forest (original layout)
       {
         worldW: 1800,
-        skyTop: '#a8d838', skyMid: '#c8f050', skyBot: '#78b820',
+        skyTop: '#1c8fa0', skyMid: '#5fc4c9', skyBot: '#dff3ef',
         enemies: [],
         platforms: [
           { x: 0, y: 410, w: 200, h: 12, curve: true },
@@ -1499,21 +1499,46 @@
         return 'rgb(' + Math.round(c[0] * factor) + ',' + Math.round(c[1] * factor) + ',' + Math.round(c[2] * factor) + ')';
       }
 
+      // Rolling hills (distant, olive-yellow)
+      ctx.save(); ctx.translate(-cameraX * 0.1, 0);
+      ctx.fillStyle = shadeColor('#8a7c28', treeShade);
+      ctx.beginPath(); ctx.moveTo(-300, H);
+      for (let i = 0; i <= 20; i++) ctx.lineTo(i * 260 - 300, H * 0.7 - Math.sin(i * 0.8 + 1.2) * 40 - Math.cos(i * 1.3) * 22);
+      ctx.lineTo(5200, H); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = shadeColor('#a89830', treeShade);
+      ctx.beginPath(); ctx.moveTo(-300, H);
+      for (let i = 0; i <= 20; i++) ctx.lineTo(i * 260 - 300, H * 0.72 - Math.sin(i * 0.8 + 1.2) * 26 - Math.cos(i * 1.3) * 14);
+      ctx.lineTo(5200, H); ctx.closePath(); ctx.fill();
+      ctx.restore();
+
+      // Rocks near the treeline
+      ctx.save(); ctx.translate(-cameraX * 0.4, 0);
+      for (let rx = 140; rx < 4000; rx += 480) {
+        const rY = H * 0.76;
+        ctx.fillStyle = shadeColor('#8a8478', treeShade);
+        ctx.beginPath();
+        ctx.ellipse(rx, rY, 22, 26, -0.15, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = shadeColor('#b0aa9c', treeShade);
+        ctx.beginPath();
+        ctx.ellipse(rx - 6, rY - 6, 8, 10, -0.2, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+
       // Far canopy
       ctx.save(); ctx.translate(-cameraX * 0.08, 0);
-      ctx.fillStyle = shadeColor('#122e0a', treeShade);
+      ctx.fillStyle = shadeColor('#5a2c0a', treeShade);
       ctx.beginPath(); ctx.moveTo(-300, -10);
       for (let i = 0; i <= 32; i++) ctx.lineTo(i * 155 - 300, 60 + Math.sin(i * 0.95 + 1) * 38 + Math.cos(i * 1.8) * 20);
       ctx.lineTo(5200, -10); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = shadeColor('#1a5410', treeShade);
+      ctx.fillStyle = shadeColor('#8a4210', treeShade);
       ctx.beginPath(); ctx.moveTo(-300, -10);
       for (let i = 0; i <= 32; i++) ctx.lineTo(i * 155 - 300, 45 + Math.sin(i * 0.95 + 1) * 38 + Math.cos(i * 1.8) * 20);
       ctx.lineTo(5200, -10); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = shadeColor('#268c18', treeShade);
+      ctx.fillStyle = shadeColor('#c05f16', treeShade);
       ctx.beginPath(); ctx.moveTo(-300, -10);
       for (let i = 0; i <= 32; i++) ctx.lineTo(i * 140 - 300, 30 + Math.sin(i * 1.4 + 2) * 28 + Math.cos(i * 0.85) * 16);
       ctx.lineTo(5200, -10); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = shadeColor('#3aaa22', treeShade);
+      ctx.fillStyle = shadeColor('#e8892a', treeShade);
       ctx.beginPath(); ctx.moveTo(-300, -10);
       for (let i = 0; i <= 32; i++) ctx.lineTo(i * 138 - 300, 18 + Math.sin(i * 1.7 + 0.5) * 18 + Math.cos(i * 1.2) * 10);
       ctx.lineTo(5200, -10); ctx.closePath(); ctx.fill();
@@ -1536,19 +1561,19 @@
 
       // Mid canopy
       ctx.save(); ctx.translate(-cameraX * 0.25, 0);
-      ctx.fillStyle = shadeColor('#143a0c', treeShade);
+      ctx.fillStyle = shadeColor('#6a3410', treeShade);
       ctx.beginPath(); ctx.moveTo(-200, -10);
       for (let i = 0; i <= 28; i++) ctx.lineTo(i * 175 - 200, 72 + Math.sin(i * 1.15 + 0.6) * 42 + Math.cos(i * 2.2) * 22);
       ctx.lineTo(5000, -10); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = shadeColor('#1e6e12', treeShade);
+      ctx.fillStyle = shadeColor('#9a4c14', treeShade);
       ctx.beginPath(); ctx.moveTo(-200, -10);
       for (let i = 0; i <= 28; i++) ctx.lineTo(i * 175 - 200, 58 + Math.sin(i * 1.15 + 0.6) * 42 + Math.cos(i * 2.2) * 22);
       ctx.lineTo(5000, -10); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = shadeColor('#348a20', treeShade);
+      ctx.fillStyle = shadeColor('#d0701c', treeShade);
       ctx.beginPath(); ctx.moveTo(-200, -10);
       for (let i = 0; i <= 28; i++) ctx.lineTo(i * 152 - 200, 42 + Math.sin(i * 1.85 + 1.2) * 32 + Math.cos(i * 0.9) * 18);
       ctx.lineTo(5000, -10); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = shadeColor('#4aaa2a', treeShade);
+      ctx.fillStyle = shadeColor('#f0972e', treeShade);
       ctx.beginPath(); ctx.moveTo(-200, -10);
       for (let i = 0; i <= 28; i++) ctx.lineTo(i * 148 - 200, 26 + Math.sin(i * 2.1 + 0.3) * 20 + Math.cos(i * 1.3) * 12);
       ctx.lineTo(5000, -10); ctx.closePath(); ctx.fill();
@@ -1622,40 +1647,60 @@
         const cr = 58 + (tx % 5) * 13;
         const cy2 = H * (0.14 + (tx % 4) * 0.04);
         // Deep shadow base
-        ctx.fillStyle = shadeColor('#0e3808', treeShade);
+        ctx.fillStyle = shadeColor('#5c2a08', treeShade);
         ctx.beginPath(); ctx.ellipse(tx + cr * 0.14, cy2 + cr * 0.32, cr * 1.18, cr * 0.92, 0, 0, Math.PI * 2); ctx.fill();
         // Main shadow cluster
-        ctx.fillStyle = shadeColor('#1a6010', treeShade);
+        ctx.fillStyle = shadeColor('#8a3e0c', treeShade);
         ctx.beginPath(); ctx.ellipse(tx + cr * 0.1, cy2 + cr * 0.22, cr * 1.08, cr * 0.84, 0, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(tx - cr * 0.7, cy2 + cr * 0.35, cr * 0.52, cr * 0.44, 0.3, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(tx + cr * 0.72, cy2 + cr * 0.28, cr * 0.48, cr * 0.4, -0.25, 0, Math.PI * 2); ctx.fill();
-        // Mid green clusters
-        ctx.fillStyle = shadeColor('#38a020', treeShade);
+        // Mid orange clusters
+        ctx.fillStyle = shadeColor('#d4711c', treeShade);
         ctx.beginPath(); ctx.ellipse(tx, cy2, cr, cr * 0.8, 0, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(tx - cr * 0.52, cy2 + cr * 0.2, cr * 0.6, cr * 0.5, 0, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(tx + cr * 0.5, cy2 + cr * 0.16, cr * 0.56, cr * 0.46, 0, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(tx - cr * 0.3, cy2 + cr * 0.42, cr * 0.44, cr * 0.38, 0.15, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(tx + cr * 0.28, cy2 - cr * 0.08, cr * 0.42, cr * 0.35, -0.1, 0, Math.PI * 2); ctx.fill();
         // Bright highlight clusters
-        ctx.fillStyle = shadeColor('#72d840', treeShade);
+        ctx.fillStyle = shadeColor('#f0952e', treeShade);
         ctx.beginPath(); ctx.ellipse(tx - cr * 0.16, cy2 - cr * 0.2, cr * 0.5, cr * 0.36, -0.2, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(tx + cr * 0.34, cy2 - cr * 0.14, cr * 0.38, cr * 0.28, 0.3, 0, Math.PI * 2); ctx.fill();
         // Specular tip
-        ctx.fillStyle = shadeColor('#96f050', treeShade);
+        ctx.fillStyle = shadeColor('#ffc158', treeShade);
         ctx.beginPath(); ctx.ellipse(tx - cr * 0.08, cy2 - cr * 0.32, cr * 0.26, cr * 0.18, -0.15, 0, Math.PI * 2); ctx.fill();
       }
       ctx.restore();
 
+      // ── Mario-style puffy clouds drifting above the treeline ───────────────────
+      function drawCloud(cx, cy, scale) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, 12 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 14 * scale, cy - 7 * scale, 14 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 30 * scale, cy, 12 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 14 * scale, cy + 5 * scale, 15 * scale, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.save();
+      ctx.translate(-cameraX * 0.06, 0);
+      ctx.fillStyle = currentLevel === 2 ? 'rgba(220,228,255,0.55)' : 'rgba(255,255,255,0.85)';
+      const cloudSpots = [
+        [30, 22, 1.0], [280, 12, 0.8], [560, 26, 1.15], [820, 10, 0.9],
+        [1080, 24, 1.05], [1340, 14, 0.85], [1600, 22, 1.1], [1860, 12, 0.9],
+        [2100, 24, 1.0],
+      ];
+      for (const [cx0, cy0, sc] of cloudSpots) drawCloud(cx0, cy0, sc);
+      ctx.restore();
+
       // Ground
       const gg = ctx.createLinearGradient(0, H * 0.72, 0, H);
-      gg.addColorStop(0, shadeColor('#50b825', treeShade));
-      gg.addColorStop(0.2, shadeColor('#3e9418', treeShade));
-      gg.addColorStop(1, shadeColor('#286a10', treeShade));
+      gg.addColorStop(0, shadeColor('#c9b23a', treeShade));
+      gg.addColorStop(0.2, shadeColor('#a89428', treeShade));
+      gg.addColorStop(1, shadeColor('#786018', treeShade));
       ctx.fillStyle = gg; ctx.fillRect(0, H * 0.72, W, H * 0.28);
 
       const pg2 = ctx.createLinearGradient(0, H * 0.74, 0, H);
-      pg2.addColorStop(0, shadeColor('#a07840', treeShade));
-      pg2.addColorStop(1, shadeColor('#7a5828', treeShade));
+      pg2.addColorStop(0, shadeColor('#5a3c1c', treeShade));
+      pg2.addColorStop(1, shadeColor('#3a2410', treeShade));
       ctx.fillStyle = pg2;
       ctx.beginPath();
       ctx.moveTo(0, H * 0.79);
@@ -1667,7 +1712,7 @@
         const gy = H * 0.755 + Math.sin(gx * 0.22) * 4;
         const hv = 10 + (gx % 7) * 2;
         const lean = (gx % 5 - 2) * 1.5;
-        ctx.strokeStyle = gx % 3 === 0 ? shadeColor('#4cc018', treeShade) : shadeColor('#368a10', treeShade);
+        ctx.strokeStyle = gx % 3 === 0 ? shadeColor('#d4c04a', treeShade) : shadeColor('#a89428', treeShade);
         ctx.lineWidth = 1.4;
         ctx.beginPath();
         ctx.moveTo(gx + 4, gy + 4);
@@ -1678,7 +1723,7 @@
       for (let gx = -10; gx < W + 10; gx += 14) {
         const hv = 1 + (gx % 7) * 0.9;
         const gy = H * 0.88 + Math.sin(gx * 0.14) * 7 - hv;
-        const col = gx % 42 < 14 ? shadeColor('#266e10', treeShade) : gx % 42 < 28 ? shadeColor('#1e5a0c', treeShade) : shadeColor('#30841a', treeShade);
+        const col = gx % 42 < 14 ? shadeColor('#8a7a20', treeShade) : gx % 42 < 28 ? shadeColor('#6e6018', treeShade) : shadeColor('#a89428', treeShade);
         ctx.fillStyle = col;
         ctx.beginPath();
         ctx.moveTo(gx, gy + 10);
