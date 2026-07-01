@@ -97,6 +97,18 @@
       right: 18px;
       width: 88px;
     }
+
+    #m-shoot {
+      bottom: 110px;
+      right: 18px;
+      width: 74px;
+      background: rgba(255, 100, 30, 0.35);
+      border-color: rgba(255, 160, 60, 0.7);
+    }
+
+    #m-shoot:active {
+      background: rgba(255, 120, 0, 0.7);
+    }
   </style>
 </head>
 
@@ -112,7 +124,7 @@
   <div id="m-left" class="m-btn">◀</div>
   <div id="m-right" class="m-btn">▶</div>
   <div id="m-jump" class="m-btn">↑</div>
-  <div id="m-shoot" class="m-btn" style="display:none">🔫</div>
+  <div id="m-shoot" class="m-btn">🔫</div>
   <div id="controls">← → Move &nbsp;|&nbsp; SPACE / ↑ Jump &nbsp;|&nbsp; Double jump! &nbsp;|&nbsp; <b>F</b> Shoot (lvl 3) &nbsp;|&nbsp; Collect all coins then reach the door!</div>
 
   <script>
@@ -394,7 +406,6 @@
       playerAmmo = 0;
       shootCooldown = 0;
       // show/hide shoot button
-      document.getElementById('m-shoot').style.display = lvl.patrons ? 'flex' : 'none';
       player.x = 80; player.y = 350;
       player.vx = 0; player.vy = 0;
       player.onGround = false; player.jumpsLeft = 2;
