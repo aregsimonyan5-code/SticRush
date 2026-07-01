@@ -163,7 +163,8 @@
   <div id="score-bar">
     <span>🌟 Level <span id="level">1</span>/3</span>
     <span>⭐ Coins: <span id="coins">0</span></span>
-    <span>❤️ Lives: <span id="lives">3</span></span>
+    <span>🔴 P1: <span id="lives">3</span>❤️</span>
+    <span>🟢 P2: <span id="lives2">3</span>❤️</span>
     <span>🏆 Score: <span id="score">0</span></span>
   </div>
   <canvas id="c"></canvas>
@@ -459,7 +460,7 @@
       makeStream(BAS, 'triangle', 0.09);
     }
 
-    // ── Player ────────────────────────────────────────────────────────────────────
+    // ── Players ───────────────────────────────────────────────────────────────────
     const player = {
       x: 80, y: 350,
       w: 20, h: 36,
@@ -469,8 +470,26 @@
       facing: 1,
       walkFrame: 0,
       walkTimer: 0,
-      hitCooldown: 0
+      hitCooldown: 0,
+      atDoor: false
     };
+
+    const player2 = {
+      x: 120, y: 350,
+      w: 20, h: 36,
+      vx: 0, vy: 0,
+      onGround: false,
+      jumpsLeft: 2,
+      facing: 1,
+      walkFrame: 0,
+      walkTimer: 0,
+      hitCooldown: 0,
+      atDoor: false
+    };
+
+    let lives2 = 3;
+    let p2shootCooldown = 0;
+    let p2Ammo = 0;
 
     // ── Load Level ────────────────────────────────────────────────────────────────
     function loadLevel(n) {
@@ -496,7 +515,12 @@
       player.x = 80; player.y = 350;
       player.vx = 0; player.vy = 0;
       player.onGround = false; player.jumpsLeft = 2;
-      player.facing = 1; player.walkFrame = 0; player.walkTimer = 0; player.hitCooldown = 0;
+      player.facing = 1; player.walkFrame = 0; player.walkTimer = 0; player.hitCooldown = 0; player.atDoor = false;
+      player2.x = 120; player2.y = 350;
+      player2.vx = 0; player2.vy = 0;
+      player2.onGround = false; player2.jumpsLeft = 2;
+      player2.facing = 1; player2.walkFrame = 0; player2.walkTimer = 0; player2.hitCooldown = 0; player2.atDoor = false;
+      p2shootCooldown = 0; p2Ammo = 0;
       cameraX = 0;
       particles = [];
       coins = 0;
@@ -604,13 +628,21 @@
           if (gameOver || finalWin) { restartGame(); return; }
           if (levelComplete) { nextLevel(); return; }
         }
-        if ((e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') && !gameOver && !finalWin && !levelComplete) {
+        if ((e.code === 'Space' || e.code === 'ArrowUp') && !gameOver && !finalWin && !levelComplete) {
           if (player.jumpsLeft > 0) {
             playSfx(player.jumpsLeft === 2 ? 'jump' : 'doublejump');
             shakeMag = 5;
             player.vy = -13;
             player.jumpsLeft--;
             spawnParticles(player.x + player.w / 2, player.y + player.h, '#aad');
+          }
+        }
+        if (e.code === 'KeyW' && !gameOver && !finalWin && !levelComplete) {
+          if (player2.jumpsLeft > 0) {
+            playSfx(player2.jumpsLeft === 2 ? 'jump' : 'doublejump');
+            player2.vy = -13;
+            player2.jumpsLeft--;
+            spawnParticles(player2.x + player2.w / 2, player2.y + player2.h, '#afa');
           }
         }
       }
