@@ -851,58 +851,117 @@
       ctx.save();
 
       const swing = airborne ? 0 : Math.sin(walkFrame / 4 * Math.PI * 2);
-      const legA = airborne ? 18 : swing * 24;
-      const armA = airborne ? -30 : -swing * 20;
+      const legSwing = airborne ? 20 : swing * 28;
+      const armSwing = airborne ? -35 : -swing * 22;
 
-      function limb(px, py, angleDeg, len, wid, light, dark) {
-        ctx.save();
-        ctx.translate(px, py);
-        ctx.rotate(angleDeg * Math.PI / 180);
-        const g = ctx.createLinearGradient(-wid / 2, 0, wid / 2, 0);
-        g.addColorStop(0, dark); g.addColorStop(0.45, light); g.addColorStop(1, dark);
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.roundRect(-wid / 2, 0, wid, len, wid / 3);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      const hipX = cx, hipY = y + 22;
-      const shlX = cx, shlY = y + 14;
-
-      limb(hipX - 2 * facing, hipY, -legA, 14, 7, '#2255bb', '#102060');
-      limb(shlX - 5 * facing, shlY, -armA * facing, 11, 5, '#3a70dd', '#1a3a80');
-
-      const tg = ctx.createLinearGradient(cx - 8, 0, cx + 8, 0);
-      tg.addColorStop(0, '#7a1515'); tg.addColorStop(0.45, '#cc2e2e'); tg.addColorStop(1, '#7a1515');
-      ctx.fillStyle = tg;
-      ctx.beginPath(); ctx.roundRect(cx - 7, y + 13, 14, 11, 3); ctx.fill();
-
-      limb(hipX + 2 * facing, hipY, legA, 14, 7, '#2255bb', '#102060');
-      limb(shlX + 5 * facing, shlY, armA * facing, 11, 5, '#3a70dd', '#1a3a80');
-
-      [[-1, -legA], [1, legA]].forEach(function (pair) {
+      // ── Shoes ──
+      [[- 1, -legSwing], [1, legSwing]].forEach(function (pair) {
         const side = pair[0], ang = pair[1];
         ctx.save();
-        ctx.translate(hipX + side * 2 * facing, hipY);
+        ctx.translate(cx + side * 2 * facing, y + 22);
         ctx.rotate(ang * Math.PI / 180);
-        ctx.fillStyle = '#1a0f05';
-        ctx.beginPath(); ctx.roundRect(-4, 12, 11, 4, 2); ctx.fill();
+        ctx.fillStyle = '#5c3010';
+        ctx.beginPath(); ctx.roundRect(-4, 11, 12, 5, 2); ctx.fill();
+        // shoe tip
+        ctx.fillStyle = '#3a1a06';
+        ctx.beginPath(); ctx.ellipse(facing > 0 ? 6 : 2, 14, 3, 2, 0, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       });
 
-      const hg = ctx.createRadialGradient(cx - 2, y + 5, 1, cx, y + 7, 7);
-      hg.addColorStop(0, '#f8dfc0'); hg.addColorStop(0.65, '#e0a870'); hg.addColorStop(1, '#b07040');
-      ctx.fillStyle = hg;
-      ctx.beginPath(); ctx.arc(cx, y + 7, 7, 0, Math.PI * 2); ctx.fill();
+      // ── Back leg ──
+      ctx.save();
+      ctx.translate(cx - 2 * facing, y + 22);
+      ctx.rotate(-legSwing * Math.PI / 180);
+      ctx.fillStyle = '#1a4ab0';
+      ctx.beginPath(); ctx.roundRect(-4, 0, 8, 13, 3); ctx.fill();
+      ctx.restore();
 
-      ctx.fillStyle = '#1e1005';
-      ctx.beginPath(); ctx.ellipse(cx, y + 3, 7.5, 5, 0, Math.PI, 0); ctx.fill();
+      // ── Back arm ──
+      ctx.save();
+      ctx.translate(cx - 5 * facing, y + 15);
+      ctx.rotate(-armSwing * facing * Math.PI / 180);
+      ctx.fillStyle = '#cc2020';
+      ctx.beginPath(); ctx.roundRect(-3, 0, 6, 10, 2); ctx.fill();
+      // hand
+      ctx.fillStyle = '#f5c98a';
+      ctx.beginPath(); ctx.ellipse(0, 11, 3, 3, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
 
+      // ── Overalls bib ──
+      ctx.fillStyle = '#1a4ab0';
+      ctx.beginPath(); ctx.roundRect(cx - 6, y + 14, 12, 10, 2); ctx.fill();
+      // bib straps
+      ctx.fillStyle = '#1a4ab0';
+      ctx.fillRect(cx - 5, y + 11, 3, 5);
+      ctx.fillRect(cx + 2, y + 11, 3, 5);
+
+      // ── Red shirt body ──
+      ctx.fillStyle = '#cc2020';
+      ctx.beginPath(); ctx.roundRect(cx - 7, y + 12, 14, 8, 3); ctx.fill();
+
+      // ── Front leg ──
+      ctx.save();
+      ctx.translate(cx + 2 * facing, y + 22);
+      ctx.rotate(legSwing * Math.PI / 180);
+      ctx.fillStyle = '#1a4ab0';
+      ctx.beginPath(); ctx.roundRect(-4, 0, 8, 13, 3); ctx.fill();
+      ctx.restore();
+
+      // ── Front arm ──
+      ctx.save();
+      ctx.translate(cx + 5 * facing, y + 15);
+      ctx.rotate(armSwing * facing * Math.PI / 180);
+      ctx.fillStyle = '#cc2020';
+      ctx.beginPath(); ctx.roundRect(-3, 0, 6, 10, 2); ctx.fill();
+      // hand
+      ctx.fillStyle = '#f5c98a';
+      ctx.beginPath(); ctx.ellipse(0, 11, 3, 3, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      // ── Face ──
+      ctx.fillStyle = '#f5c98a';
+      ctx.beginPath(); ctx.ellipse(cx, y + 7, 7, 7, 0, 0, Math.PI * 2); ctx.fill();
+
+      // ── Ear ──
+      ctx.fillStyle = '#e8b87a';
+      ctx.beginPath(); ctx.ellipse(cx - facing * 6, y + 7, 2.5, 2.5, 0, 0, Math.PI * 2); ctx.fill();
+
+      // ── Nose ──
+      ctx.fillStyle = '#e8906a';
+      ctx.beginPath(); ctx.ellipse(cx + facing * 3, y + 8, 3, 2, facing * 0.3, 0, Math.PI * 2); ctx.fill();
+
+      // ── Mustache ──
+      ctx.fillStyle = '#5c2e00';
+      ctx.beginPath(); ctx.ellipse(cx + facing * 1, y + 10, 4, 2, -facing * 0.2, 0, Math.PI); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx + facing * 5, y + 10, 3, 1.8, facing * 0.2, 0, Math.PI); ctx.fill();
+
+      // ── Eye ──
       ctx.fillStyle = '#111';
-      ctx.beginPath(); ctx.arc(cx + facing * 3, y + 7, 1.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx + facing * 3, y + 5.5, 1.8, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#fff';
-      ctx.beginPath(); ctx.arc(cx + facing * 2.4, y + 6.5, 0.6, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx + facing * 2.4, y + 5, 0.7, 0, Math.PI * 2); ctx.fill();
+
+      // ── Eyebrow ──
+      ctx.strokeStyle = '#5c2e00'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(cx + facing * 1.5, y + 3.5);
+      ctx.lineTo(cx + facing * 5, y + 3);
+      ctx.stroke();
+
+      // ── Red cap ──
+      ctx.fillStyle = '#cc1010';
+      // brim
+      ctx.beginPath(); ctx.ellipse(cx + facing * 2, y + 2, 9, 2.5, -facing * 0.1, 0, Math.PI * 2); ctx.fill();
+      // dome
+      ctx.beginPath(); ctx.ellipse(cx - facing * 1, y - 3, 8, 6, 0, Math.PI, 0); ctx.fill();
+      // cap highlight
+      ctx.fillStyle = '#ff4040';
+      ctx.beginPath(); ctx.ellipse(cx - facing * 3, y - 4, 3, 2, -0.3, Math.PI, 0); ctx.fill();
+
+      // ── M logo on cap ──
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 6px monospace'; ctx.textAlign = 'center';
+      ctx.fillText('M', cx - facing * 1, y - 1);
 
       ctx.restore();
     }
