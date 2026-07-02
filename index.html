@@ -1018,7 +1018,13 @@
       ctx.beginPath(); ctx.ellipse(cx + facing * 1, y + 10, 4, 2, -facing * 0.2, 0, Math.PI); ctx.fill();
       ctx.beginPath(); ctx.ellipse(cx + facing * 5, y + 10, 3, 1.8, facing * 0.2, 0, Math.PI); ctx.fill();
 
-      // ── Eye ──
+      // ── Eye (far, smaller) ──
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(cx - facing * 1, y + 5.5, 1.4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(cx - facing * 1.6, y + 5, 0.55, 0, Math.PI * 2); ctx.fill();
+
+      // ── Eye (near) ──
       ctx.fillStyle = '#111';
       ctx.beginPath(); ctx.arc(cx + facing * 3, y + 5.5, 1.8, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#fff';
