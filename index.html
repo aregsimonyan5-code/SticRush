@@ -1724,11 +1724,17 @@
       ctx.bezierCurveTo(W * 0.3, H * 0.77, W * 0.7, H * 0.81, W, H * 0.78);
       ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
 
-      // Foreground fringe blades at sod edge
-      for (let gx = -8; gx < W + 8; gx += 10) {
+      // Foreground fringe blades at sod edge (world-space, scrolls with camera)
+      grassTick += 0.05;
+      ctx.save();
+      ctx.translate(-Math.round(cameraX), 0);
+      const gStart = Math.floor((cameraX - 10) / 10) * 10;
+      const gEnd = cameraX + W + 10;
+      for (let gx = gStart; gx < gEnd; gx += 10) {
         const gy = H * 0.755 + Math.sin(gx * 0.22) * 4;
         const hv = 10 + (gx % 7) * 2;
-        const lean = (gx % 5 - 2) * 1.5;
+        const sway = Math.sin(grassTick + gx * 0.3) * 3;
+        const lean = (gx % 5 - 2) * 1.5 + sway;
         ctx.strokeStyle = gx % 3 === 0 ? shadeColor('#d4c04a', treeShade) : shadeColor('#a89428', treeShade);
         ctx.lineWidth = 1.4;
         ctx.beginPath();
@@ -1737,20 +1743,23 @@
         ctx.stroke();
       }
       // Main grass tufts — denser and varied
-      for (let gx = -10; gx < W + 10; gx += 14) {
+      const gStart2 = Math.floor((cameraX - 10) / 14) * 14;
+      for (let gx = gStart2; gx < gEnd; gx += 14) {
         const hv = 1 + (gx % 7) * 0.9;
         const gy = H * 0.88 + Math.sin(gx * 0.14) * 7 - hv;
         const col = gx % 42 < 14 ? shadeColor('#8a7a20', treeShade) : gx % 42 < 28 ? shadeColor('#6e6018', treeShade) : shadeColor('#a89428', treeShade);
+        const sway = Math.sin(grassTick * 1.3 + gx * 0.25) * 4;
         ctx.fillStyle = col;
         ctx.beginPath();
         ctx.moveTo(gx, gy + 10);
-        ctx.bezierCurveTo(gx - 3, gy - 6, gx + 2, gy - 12 - hv, gx + 5, gy + 2);
-        ctx.bezierCurveTo(gx + 7, gy - 9, gx + 12, gy - 12 - hv, gx + 14, gy + 2);
-        ctx.bezierCurveTo(gx + 16, gy - 6, gx + 20, gy - 3, gx + 22, gy + 10);
+        ctx.bezierCurveTo(gx - 3 + sway * 0.3, gy - 6, gx + 2 + sway, gy - 12 - hv, gx + 5, gy + 2);
+        ctx.bezierCurveTo(gx + 7 + sway, gy - 9, gx + 12 + sway * 1.3, gy - 12 - hv, gx + 14, gy + 2);
+        ctx.bezierCurveTo(gx + 16 + sway * 0.6, gy - 6, gx + 20 + sway * 0.3, gy - 3, gx + 22, gy + 10);
         ctx.closePath(); ctx.fill();
       }
       // Wildflower dots
-      for (let gx = 0; gx < W; gx += 14) {
+      const gStart3 = Math.floor(cameraX / 14) * 14;
+      for (let gx = gStart3; gx < cameraX + W; gx += 14) {
         if (gx % 90 === 0) {
           const gy = H * 0.88 + Math.sin(gx * 0.14) * 7 - 14;
           ctx.fillStyle = shadeColor('#f0e020', treeShade);
@@ -1765,6 +1774,7 @@
           ctx.beginPath(); ctx.arc(gx + 5, gy, 2.5, 0, Math.PI * 2); ctx.fill();
         }
       }
+      ctx.restore();
 
       // ── World-space objects ────────────────────────────────────────────────────
       ctx.save();
